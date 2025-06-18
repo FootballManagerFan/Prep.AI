@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Mock Interview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        secondary: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #2563eb, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .shadow-soft {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <!-- Header -->
+    <header class="glass-effect shadow-soft">
+        <div class="max-w-6xl mx-auto px-4 py-6">
+            <div class="text-center">
+                <h1 class="text-4xl font-bold gradient-text mb-2">
+                    AI Mock Interview
+                </h1>
+                <p class="text-slate-600 text-lg">
+                    Practice your technical interview skills with our AI interviewer
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Chat Interface -->
+            <div class="lg:col-span-2">
+                <div class="glass-effect rounded-2xl shadow-soft h-[600px] flex flex-col">
+                    <!-- Header -->
+                    <div class="p-6 border-b border-slate-200">
+                        <h2 class="text-xl font-semibold text-slate-800">Interview Conversation</h2>
+                        <p class="text-sm text-slate-500">Real-time AI-powered interview practice</p>
+                    </div>
+
+                    <!-- Chat Messages -->
+                    <div id="chatMessages" class="flex-1 overflow-y-auto p-6 space-y-4">
+                        <!-- AI Welcome Message -->
+                        <div class="flex items-start space-x-3">
+                            <div class="w-8 h-8 bg-gradient-to-r from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                                AI
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-200">
+                                    <p class="text-slate-800">Hello! I'm your AI interviewer. I'll ask you technical questions to help you practice. Click the button to start recording your responses.</p>
+                                </div>
+                                <p class="text-xs text-slate-400 mt-1">AI Interviewer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <div class="space-y-6">
+                <!-- Recording Controls -->
+                <div class="glass-effect rounded-2xl p-6 shadow-soft">
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Recording Controls</h3>
+                        
+                        <button
+                            id="recordBtn"
+                            class="relative w-20 h-20 rounded-full flex items-center justify-center text-white font-semibold text-lg transition-all duration-300 transform hover:scale-105 active:scale-95 bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40"
+                        >
+                            <svg id="recordIcon" class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+
+                        <p id="recordLabel" class="mt-4 text-sm text-slate-600">Click to start recording</p>
+                    </div>
+                </div>
+
+                <!-- Status Indicator -->
+                <div class="glass-effect rounded-2xl p-6 shadow-soft">
+                    <div>
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Status</h3>
+                        
+                        <div class="flex items-center space-x-3 p-4 bg-white rounded-xl border border-slate-200">
+                            <div class="text-2xl">💬</div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-slate-600" id="status">Ready to start your interview</p>
+                            </div>
+                        </div>
+
+                        <!-- Status Tips -->
+                        <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                            <h4 class="text-sm font-semibold text-blue-800 mb-2">Tips:</h4>
+                            <ul class="text-xs text-blue-700 space-y-1">
+                                <li>• Speak clearly and at a normal pace</li>
+                                <li>• Wait for the AI to finish before responding</li>
+                                <li>• The system will automatically detect when you stop speaking</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="public/script.js"></script>
+  </body>
+</html>
