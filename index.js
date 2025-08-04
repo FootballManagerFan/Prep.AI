@@ -4,6 +4,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { SpeechClient } from '@google-cloud/speech';
+import { Storage } from '@google-cloud/storage';
 import OpenAI from 'openai';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
@@ -21,11 +22,7 @@ const port = 3000;
 // Middleware
 app.use(cors());
 app.use(express.json());
-
-// Serve static HTML file
 app.use(express.static(__dirname));
-
-// Serve uploaded files
 app.use('/uploads', express.static('uploads'));
 
 // Multer setup
@@ -41,7 +38,16 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Google Speech client
-const client = new SpeechClient();
+const client = new SpeechClient({
+  keyFilename: path.join(__dirname, 'googenv.json')
+});
+
+// Google Cloud Storage client
+const storageClient = new Storage({
+  keyFilename: path.join(__dirname, 'googenv.json')
+});
+const bucketName = 'prepai_bucket';
+const bucket = storageClient.bucket(bucketName);
 
 // OpenAI setup
 const openai = new OpenAI({
@@ -54,33 +60,70 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
     return res.status(400).json({ error: 'No audio file uploaded.' });
   }
 
-  console.log('Audio file received:', req.file);
-
   try {
-    const file = fs.readFileSync(req.file.path);
-    const audioBytes = file.toString('base64');
-
-    const audio = { content: audioBytes };
-    const config = {
-      encoding: 'WEBM_OPUS',
-      sampleRateHertz: 48000,
-      languageCode: 'en-US'
-    };
-    const request = { audio, config };
-
-    const [response] = await client.recognize(request);
-    const transcription = response.results
-      .map(result => result.alternatives[0].transcript)
-      .join('\n');
-
-    console.log('Transcription:', transcription);
+    let transcription;
+    
+    // Try inline processing first
+    try {
+      const file = fs.readFileSync(req.file.path);
+      const audioBytes = file.toString('base64');
+      
+      const audio = { content: audioBytes };
+      const config = {
+        encoding: 'WEBM_OPUS',
+        sampleRateHertz: 48000,
+        languageCode: 'en-US'
+      };
+      const request = { audio, config };
+      
+      const [operation] = await client.longRunningRecognize(request);
+      const [response] = await operation.promise();
+      
+      transcription = response.results
+        .map(result => result.alternatives[0].transcript)
+        .join('\n');
+      
+    } catch (inlineError) {
+      // If inline fails due to duration limit, try GCS
+      if (inlineError.message.includes('Inline audio exceeds duration limit')) {
+        const gcsFileName = `audio-${Date.now()}.webm`;
+        const file = bucket.file(gcsFileName);
+        
+        // Upload the file to GCS
+        await file.save(fs.readFileSync(req.file.path), {
+          metadata: { contentType: 'audio/webm' }
+        });
+        
+        // Use GCS URI for speech recognition
+        const audio = { uri: `gs://${bucketName}/${gcsFileName}` };
+        const config = {
+          encoding: 'WEBM_OPUS',
+          sampleRateHertz: 48000,
+          languageCode: 'en-US'
+        };
+        const request = { audio, config };
+        
+        const [operation] = await client.longRunningRecognize(request);
+        const [response] = await operation.promise();
+        
+        transcription = response.results
+          .map(result => result.alternatives[0].transcript)
+          .join('\n');
+        
+        // Clean up: delete the file from GCS
+        await file.delete();
+        
+      } else {
+        throw inlineError;
+      }
+    }
 
     const completion = await openai.chat.completions.create({
       model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
-          content: 'You are a professional technical interviewer. Given the candidate\'s answer, you ask the next interview question. Keep responses concise and engaging.'
+          content: 'You are a professional technical interviewer. Given the candidate\'s answer, you ask the next question. Keep responses concise and engaging.'
         },
         {
           role: 'user',
@@ -91,36 +134,22 @@ app.post('/upload', upload.single('audio'), async (req, res) => {
     });
 
     const nextQuestion = completion.choices[0].message.content;
-    console.log('Next Question:', nextQuestion);
 
     res.json({
       message: 'Audio processed!',
       transcription,
       nextQuestion
     });
+
   } catch (error) {
-    console.error('Error:', error);
-    res.status(500).json({ error: 'Something went wrong while processing the audio.' });
+    console.error('Error processing audio:', error);
+    res.status(500).json({ 
+      error: 'Error processing audio',
+      details: error.message 
+    });
   }
 });
 
-// Serve the main HTML file for the root route
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Handle 404s by serving the main HTML file
-app.use((req, res) => {
-  // Don't serve HTML for API routes
-  if (req.path.startsWith('/api') || req.path.startsWith('/upload')) {
-    return res.status(404).json({ error: 'API endpoint not found' });
-  }
-  
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-// Start server
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Static HTML app served from root directory`);
 });
