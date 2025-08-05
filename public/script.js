@@ -207,4 +207,31 @@ function addMessageToChat(sender, message, type) {
   
   chatMessages.appendChild(messageDiv);
   chatMessages.scrollTop = chatMessages.scrollHeight;
-} 
+}
+
+// Cleanup functionality
+const cleanupBtn = document.getElementById("cleanupBtn");
+
+cleanupBtn.addEventListener("click", async () => {
+  if (confirm("Are you sure you want to delete all uploaded files? This action cannot be undone.")) {
+    try {
+      cleanupBtn.disabled = true;
+      cleanupBtn.textContent = "Cleaning...";
+      
+      const response = await fetch('/clean-uploads', { method: 'POST' });
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert(`✅ ${data.message}\nFiles removed: ${data.filesRemoved}`);
+      } else {
+        alert(`❌ Error: ${data.error}`);
+      }
+    } catch (error) {
+      console.error('Cleanup error:', error);
+      alert('❌ Network error. Please try again.');
+    } finally {
+      cleanupBtn.disabled = false;
+      cleanupBtn.textContent = "🧹 Clean Uploads Folder";
+    }
+  }
+});

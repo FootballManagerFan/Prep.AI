@@ -1,13 +1,18 @@
 
 
 # Major tickets
+
+Add response streaming
+- will show the AI responses as its being generated
+- will help reduce time it takes to load responses from ai
+
+
 create upload resume section and train model based on it
 - allow for pdf upload
 - update chat completions method in index.js too consider this input
-- update UI so users can interact with this feature
 
 
-create different preset models for marketing, programming, etc
+create different prompt models for marketing, programming, etc
 - update UI so users can select between options
 - can make one at a time
 - indsutries to focus on 
@@ -20,21 +25,17 @@ create different preset models for marketing, programming, etc
   - quant
   - Fundemental Analysis/Trading
   
-
 automate cleanUploads folder 
-- clean uploads folder after convseration, not sure best logic on that
-
+- clean uploads folder after, not sure best logic
 
 
 ## Minor tickets
 
 refactor functions from script.js into seperate files for organization purposes
-
+refactor folder structure to look more professional (src, components, etc)
 
 ### Far away tickets
 
 create login database/basic auth 
 host project
-
-# PropFirm Prep?
-- show photos of charts and give multiple choice options to help aspiring traders practice there chart analysis
+migrate to react/tsx and nextjs

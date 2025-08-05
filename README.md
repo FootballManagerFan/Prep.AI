@@ -1,2 +1,2 @@
 # Prep.AI
-- npm start
+- npm run dev
