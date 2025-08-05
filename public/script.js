@@ -209,29 +209,87 @@ function addMessageToChat(sender, message, type) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-// Cleanup functionality
+// Cleanup functionality with custom modal
 const cleanupBtn = document.getElementById("cleanupBtn");
+const confirmModal = document.getElementById("confirmModal");
+const cancelBtn = document.getElementById("cancelBtn");
+const confirmBtn = document.getElementById("confirmBtn");
 
-cleanupBtn.addEventListener("click", async () => {
-  if (confirm("Are you sure you want to delete all uploaded files? This action cannot be undone.")) {
-    try {
-      cleanupBtn.disabled = true;
-      cleanupBtn.textContent = "Cleaning...";
-      
-      const response = await fetch('/clean-uploads', { method: 'POST' });
-      const data = await response.json();
-      
-      if (response.ok) {
-        alert(`✅ ${data.message}\nFiles removed: ${data.filesRemoved}`);
-      } else {
-        alert(`❌ Error: ${data.error}`);
-      }
-    } catch (error) {
-      console.error('Cleanup error:', error);
-      alert('❌ Network error. Please try again.');
-    } finally {
-      cleanupBtn.disabled = false;
-      cleanupBtn.textContent = "🧹 Clean Uploads Folder";
-    }
+// Show custom confirmation modal
+cleanupBtn.addEventListener("click", () => {
+  confirmModal.classList.remove("hidden");
+});
+
+// Hide modal on cancel
+cancelBtn.addEventListener("click", () => {
+  confirmModal.classList.add("hidden");
+});
+
+// Hide modal when clicking outside
+confirmModal.addEventListener("click", (e) => {
+  if (e.target === confirmModal) {
+    confirmModal.classList.add("hidden");
   }
 });
+
+// Handle ESC key to close modal
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && !confirmModal.classList.contains("hidden")) {
+    confirmModal.classList.add("hidden");
+  }
+});
+
+// Actual cleanup action
+confirmBtn.addEventListener("click", async () => {
+  // Hide modal first
+  confirmModal.classList.add("hidden");
+  
+  try {
+    cleanupBtn.disabled = true;
+    cleanupBtn.textContent = "Cleaning...";
+    
+    const response = await fetch('/clean-uploads', { method: 'POST' });
+    const data = await response.json();
+    
+    if (response.ok) {
+      // Create custom success notification
+      showNotification(`✅ ${data.message}\nFiles removed: ${data.filesRemoved}`, 'success');
+    } else {
+      showNotification(`❌ Error: ${data.error}`, 'error');
+    }
+  } catch (error) {
+    console.error('Cleanup error:', error);
+    showNotification('❌ Network error. Please try again.', 'error');
+  } finally {
+    cleanupBtn.disabled = false;
+    cleanupBtn.textContent = "🧹 Clean Uploads Folder";
+  }
+});
+
+// Custom notification function
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full ${
+    type === 'success' ? 'bg-green-500 text-white' : 
+    type === 'error' ? 'bg-red-500 text-white' : 
+    'bg-blue-500 text-white'
+  }`;
+  notification.textContent = message;
+  
+  document.body.appendChild(notification);
+  
+  // Slide in
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 100);
+  
+  // Slide out and remove after 4 seconds
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 4000);
+}
