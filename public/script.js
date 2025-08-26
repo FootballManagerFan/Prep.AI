@@ -3,6 +3,10 @@ const recordIcon = document.getElementById("recordIcon");
 const recordLabel = document.getElementById("recordLabel");
 const status = document.getElementById("status");
 const chatMessages = document.getElementById("chatMessages");
+const resumeUploadArea = document.getElementById("resumeUploadArea");
+const resumeInput = document.getElementById("resumeInput");
+const resumeStatus = document.getElementById("resumeStatus");
+const resetResumeBtn = document.getElementById("resetResumeBtn");
 
 let isRecording = false;
 let mediaRecorder = null;
@@ -12,6 +16,7 @@ let audioContext = null;
 let analyser = null;
 let stream = null;
 let conversationEnded = false; // Track if conversation was manually ended
+let resumeUploaded = false;
 
 recordBtn.addEventListener("click", async () => {
   if (!isRecording) {
@@ -293,3 +298,124 @@ function showNotification(message, type = 'info') {
     }, 300);
   }, 4000);
 }
+//Resume upload functionality
+resumeUploadArea.addEventListener('click', () => {
+  resumeInput.click();
+});
+
+resumeUploadArea.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  resumeUploadArea.classList.add('border-primary-400', 'bg-primary-50');
+});
+
+resumeUploadArea.addEventListener('dragleave', (e) => {
+  e.preventDefault();
+  resumeUploadArea.classList.remove('border-primary-400', 'bg-primary-50');
+});
+
+resumeUploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  resumeUploadArea.classList.remove('border-primary-400', 'bg-primary-50');
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0 && files[0].type === 'application/pdf') {
+    handleResumeUpload(files[0]);
+  } else {
+    showNotification('❌ Please upload a PDF file only', 'error');
+  }
+});
+
+resumeInput.addEventListener('change', (e) => {
+  if (e.target.files.length > 0) {
+    handleResumeUpload(e.target.files[0]);
+  }
+});
+
+async function handleResumeUpload(file) {
+  console.log('Uploading file:', file.name, 'Size:', file.size, 'Type:', file.type);
+  
+  // Validate file type
+  if (file.type !== 'application/pdf') {
+    showNotification('❌ Please select a PDF file only', 'error');
+    return;
+  }
+  
+  // Validate file size (max 10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    showNotification('❌ File too large. Please select a PDF under 10MB', 'error');
+    return;
+  }
+  
+  const formData = new FormData();
+  formData.append('resume', file);
+  
+  try {
+    resumeStatus.textContent = 'Processing resume...';
+    resumeStatus.classList.remove('hidden');
+    resumeUploadArea.style.pointerEvents = 'none';
+    resumeUploadArea.style.opacity = '0.6';
+    
+    console.log('Sending upload request...');
+    const response = await fetch('/upload-resume', {
+      method: 'POST',
+      body: formData
+    });
+    
+    console.log('Response status:', response.status);
+    const data = await response.json();
+    console.log('Response data:', data);
+    
+    if (response.ok) {
+      resumeUploaded = true;
+      resumeStatus.textContent = `✅ Resume processed successfully! (${data.textLength} characters extracted)`;
+      resumeStatus.className = 'mt-3 text-sm text-green-600';
+      resetResumeBtn.classList.remove('hidden');
+      
+      // Add initial AI question based on resume
+      addMessageToChat('AI Interviewer', data.initialQuestion, 'ai');
+      
+      showNotification('✅ Resume uploaded and processed!', 'success');
+      
+      // Update status
+      status.textContent = 'Resume processed! Ready to start your personalized interview.';
+    } else {
+      throw new Error(data.details || data.error || 'Upload failed');
+    }
+  } catch (error) {
+    console.error('Resume upload error:', error);
+    resumeStatus.textContent = `❌ Error: ${error.message}`;
+    resumeStatus.className = 'mt-3 text-sm text-red-600';
+    showNotification(`❌ Error: ${error.message}`, 'error');
+  } finally {
+    resumeUploadArea.style.pointerEvents = 'auto';
+    resumeUploadArea.style.opacity = '1';
+  }
+}
+// Reset resume functionality
+resetResumeBtn.addEventListener('click', async () => {
+  try {
+    const response = await fetch('/reset-resume', { method: 'POST' });
+    const data = await response.json();
+    
+    if (response.ok) {
+      resumeUploaded = false;
+      resumeStatus.classList.add('hidden');
+      resetResumeBtn.classList.add('hidden');
+      resumeInput.value = '';
+      
+      // Clear chat messages except the initial welcome
+      const messages = chatMessages.querySelectorAll('.flex.items-start.space-x-3');
+      messages.forEach((msg, index) => {
+        if (index > 0) { // Keep the first welcome message
+          msg.remove();
+        }
+      });
+      
+      status.textContent = 'Resume reset. Ready to upload a new resume or start interview.';
+      showNotification('✅ Resume context reset successfully', 'success');
+    }
+  } catch (error) {
+    console.error('Reset error:', error);
+    showNotification('❌ Error resetting resume', 'error');
+  }
+});

@@ -107,6 +107,33 @@
 
             <!-- Controls Panel -->
             <div class="space-y-6">
+                <!-- Resume Upload -->
+                <div class="glass-effect rounded-2xl p-6 shadow-soft">
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold text-slate-800 mb-4">Upload Resume</h3>
+                        
+                        <div id="resumeUploadArea" class="border-2 border-dashed border-slate-300 rounded-xl p-6 hover:border-primary-400 transition-colors cursor-pointer">
+                            <input type="file" id="resumeInput" accept=".pdf" class="hidden">
+                            <div class="text-center">
+                                <svg class="w-12 h-12 text-slate-400 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                </svg>
+                                <p class="text-slate-600 font-medium">Click to upload PDF resume</p>
+                                <p class="text-xs text-slate-500 mt-1">PDF files only</p>
+                            </div>
+                        </div>
+                        
+                        <div id="resumeStatus" class="mt-3 text-sm text-slate-600 hidden"></div>
+                        
+                        <button
+                            id="resetResumeBtn"
+                            class="mt-3 bg-slate-500 hover:bg-slate-600 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm hidden"
+                        >
+                            🔄 Reset Resume
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Recording Controls -->
                 <div class="glass-effect rounded-2xl p-6 shadow-soft">
                     <div class="text-center">

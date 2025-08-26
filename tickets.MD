@@ -1,5 +1,3 @@
-
-
 # Major tickets
 
 Add response streaming
@@ -28,14 +26,18 @@ create different prompt models for marketing, programming, etc
 automate cleanUploads folder 
 - clean uploads folder after, not sure best logic
 
+add text-to-speech
+- elevenLabs voice
+- corresponds with 
 
 ## Minor tickets
 
-refactor functions from script.js into seperate files for organization purposes
-refactor folder structure to look more professional (src, components, etc)
+- refactor functions from script.js into seperate files for organization purposes
+- refactor folder structure to look more professional (src, components, etc)
 
 ### Far away tickets
 
-create login database/basic auth 
-host project
-migrate to react/tsx and nextjs
+- train/fine-tune custom models
+- create login database/basic auth, store audio files for 30 days in db.
+- host project
+- migrate to react/tsx and nextjs

@@ -1,6 +1,6 @@
 # Prep.AI
 
-A tool for preparing AI-related tasks and managing uploads.
+A tool for practicing verbal skills during a interview.
 
 ## Features
 - Clean uploads directory automatically.
@@ -27,3 +27,5 @@ A tool for preparing AI-related tasks and managing uploads.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss the changes.
+
+Please check out tickets.MD for list of pending tasks you could work on. 
