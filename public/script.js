@@ -7,6 +7,9 @@ const resumeUploadArea = document.getElementById("resumeUploadArea");
 const resumeInput = document.getElementById("resumeInput");
 const resumeStatus = document.getElementById("resumeStatus");
 const resetResumeBtn = document.getElementById("resetResumeBtn");
+const textInput = document.getElementById("textInput");
+const sendTextBtn = document.getElementById("sendTextBtn");
+const testBtn = document.getElementById("testBtn");
 
 let isRecording = false;
 let mediaRecorder = null;
@@ -365,27 +368,39 @@ async function handleResumeUpload(file) {
     const data = await response.json();
     console.log('Response data:', data);
     
-    if (response.ok) {
-      resumeUploaded = true;
-      resumeStatus.textContent = `✅ Resume processed successfully! (${data.textLength} characters extracted)`;
-      resumeStatus.className = 'mt-3 text-sm text-green-600';
-      resetResumeBtn.classList.remove('hidden');
-      
-      // Add initial AI question based on resume
-      addMessageToChat('AI Interviewer', data.initialQuestion, 'ai');
-      
-      showNotification('✅ Resume uploaded and processed!', 'success');
-      
-      // Update status
-      status.textContent = 'Resume processed! Ready to start your personalized interview.';
-    } else {
-      throw new Error(data.details || data.error || 'Upload failed');
-    }
-  } catch (error) {
-    console.error('Resume upload error:', error);
-    resumeStatus.textContent = `❌ Error: ${error.message}`;
-    resumeStatus.className = 'mt-3 text-sm text-red-600';
-    showNotification(`❌ Error: ${error.message}`, 'error');
+         if (response.ok && data.initialQuestion) {
+       resumeUploaded = true;
+       resumeStatus.textContent = `✅ Resume processed successfully! (${data.textLength} characters extracted)`;
+       resumeStatus.className = 'mt-3 text-sm text-green-600';
+       resetResumeBtn.classList.remove('hidden');
+       
+       // Add initial AI question based on resume
+       addMessageToChat('AI Interviewer', data.initialQuestion, 'ai');
+       
+       showNotification('✅ Resume uploaded and processed!', 'success');
+       
+       // Update status
+       status.textContent = 'Resume processed! Ready to start your personalized interview.';
+          } else {
+       throw new Error(data.error || data.details || 'Upload failed');
+     }
+   } catch (error) {
+     console.error('Resume upload error:', {
+       message: error.message,
+       response: error.response,
+       data: error.data
+     });
+     
+     let errorMessage = error.message;
+     
+     // Handle network errors
+     if (error.message.includes('fetch')) {
+       errorMessage = 'Network error. Please check your connection and try again.';
+     }
+     
+     resumeStatus.textContent = `❌ Error: ${errorMessage}`;
+     resumeStatus.className = 'mt-3 text-sm text-red-600';
+     showNotification(`❌ ${errorMessage}`, 'error');
   } finally {
     resumeUploadArea.style.pointerEvents = 'auto';
     resumeUploadArea.style.opacity = '1';
@@ -416,6 +431,99 @@ resetResumeBtn.addEventListener('click', async () => {
     }
   } catch (error) {
     console.error('Reset error:', error);
-    showNotification('❌ Error resetting resume', 'error');
+         showNotification('❌ Error resetting resume', 'error');
+   }
+ });
+
+// Text input functionality
+sendTextBtn.addEventListener('click', async () => {
+  const message = textInput.value.trim();
+  if (!message) return;
+  
+  // Add user message to chat
+  addMessageToChat('You', message, 'user');
+  textInput.value = '';
+  
+  try {
+    sendTextBtn.disabled = true;
+    sendTextBtn.textContent = 'Sending...';
+    status.textContent = 'Processing your response...';
+    
+    const response = await fetch('/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok && data.reply) {
+      // Add AI response to chat
+      addMessageToChat('AI Interviewer', data.reply, 'ai');
+      status.textContent = 'AI responded! Continue the conversation.';
+    } else {
+      throw new Error(data.error || 'Failed to send message');
+    }
+  } catch (error) {
+    console.error('Text send error:', error);
+    addMessageToChat('AI Interviewer', '❌ Sorry, there was an error processing your message. Please try again.', 'ai');
+    status.textContent = 'Error occurred. Please try again.';
+  } finally {
+    sendTextBtn.disabled = false;
+    sendTextBtn.textContent = 'Send Response';
+  }
+});
+
+// Allow Enter key to send text (Shift+Enter for new line)
+textInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendTextBtn.click();
+  }
+});
+
+// System test functionality
+testBtn.addEventListener('click', async () => {
+  try {
+    testBtn.disabled = true;
+    testBtn.textContent = 'Testing...';
+    
+    const results = [];
+    
+    // Test PDF parser
+    try {
+      const pdfResponse = await fetch('/test-pdf');
+      const pdfData = await pdfResponse.json();
+      results.push(`✅ PDF Parser: ${pdfData.message}`);
+    } catch (e) {
+      results.push(`❌ PDF Parser: ${e.message}`);
+    }
+    
+    // Test OpenAI connection
+    try {
+      const aiResponse = await fetch('/test-openai');
+      const aiData = await aiResponse.json();
+      if (aiData.success) {
+        results.push(`✅ OpenAI: ${aiData.message}`);
+      } else {
+        results.push(`❌ OpenAI: ${aiData.error} (${aiData.code})`);
+      }
+    } catch (e) {
+      results.push(`❌ OpenAI: ${e.message}`);
+    }
+    
+    // Show results
+    const resultText = results.join('\n');
+    showNotification(resultText, results.every(r => r.startsWith('✅')) ? 'success' : 'error');
+    
+    // Also add to chat for visibility
+    addMessageToChat('System', `Test Results:\n${resultText}`, 'ai');
+    
+  } catch (error) {
+    console.error('Test error:', error);
+    showNotification('❌ Test failed: ' + error.message, 'error');
+  } finally {
+    testBtn.disabled = false;
+    testBtn.textContent = '🔍 Test System';
   }
 });
