@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Mock Interview</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -100,6 +101,46 @@
                                 </div>
                                 <p class="text-xs text-slate-400 mt-1">AI Interviewer</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code Editor Section -->
+            <div class="lg:col-span-2 mb-8">
+                <div class="glass-effect rounded-2xl shadow-soft">
+                    <!-- Header -->
+                    <div class="p-6 border-b border-slate-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-xl font-semibold text-slate-800">Code Editor</h2>
+                                <p class="text-sm text-slate-500">Write and test your solutions</p>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <select id="languageSelect" class="px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500">
+                                    <option value="python">Python</option>
+                                    <option value="javascript">JavaScript</option>
+                                    <option value="java">Java</option>
+                                    <option value="cpp">C++</option>
+                                </select>
+                                <button id="runCodeBtn" class="bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg transition-colors font-medium text-sm">
+                                    ▶️ Run Code
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Editor Container -->
+                    <div id="editorContainer" class="h-96 w-full"></div>
+                    
+                    <!-- Output Panel -->
+                    <div class="p-6 border-t border-slate-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-semibold text-slate-700">Output</h3>
+                            <button id="clearOutputBtn" class="text-xs text-slate-500 hover:text-slate-700">Clear</button>
+                        </div>
+                        <div id="outputPanel" class="bg-slate-50 rounded-lg p-4 h-24 overflow-y-auto font-mono text-sm text-slate-800">
+                            <span class="text-slate-400">// Output will appear here...</span>
                         </div>
                     </div>
                 </div>

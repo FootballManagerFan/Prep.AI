@@ -41,3 +41,17 @@ add text-to-speech
 - create login database/basic auth, store audio files for 30 days in db.
 - host project
 - migrate to react/tsx and nextjs
+
+
+# todo
+- fix chatbot ui
+- fix pdf resume
+- figure out flow of app
+
+
+
+focus on unblocking data from leads list and uploads so ganesh can proceed wtihouot mock data
+see where allyssa's at 
+look into better sms options
+
+yo bro i kinda got re-orged to n4 as you can see so i spent most of my time yesterday on that

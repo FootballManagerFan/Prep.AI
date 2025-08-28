@@ -21,6 +21,207 @@ let stream = null;
 let conversationEnded = false; // Track if conversation was manually ended
 let resumeUploaded = false;
 
+// Monaco Editor variables
+let editor = null;
+let currentLanguage = 'python';
+
+// Initialize Monaco Editor when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMonacoEditor();
+    setupEditorEventListeners();
+});
+
+// Initialize Monaco Editor
+function initializeMonacoEditor() {
+    require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.45.0/min/vs' } });
+    
+    require(['vs/editor/editor.main'], function() {
+        // Set up language-specific configurations
+        const languageConfigs = {
+            python: {
+                language: 'python',
+                theme: 'vs-dark',
+                value: `# Welcome to Python!
+# Write your solution here
+
+def solve_problem():
+    # Your code here
+    pass
+
+# Test your solution
+if __name__ == "__main__":
+    result = solve_problem()
+    print(result)`
+            },
+            javascript: {
+                language: 'javascript',
+                theme: 'vs-dark',
+                value: `// Welcome to JavaScript!
+// Write your solution here
+
+function solveProblem() {
+    // Your code here
+    return null;
+}
+
+// Test your solution
+console.log(solveProblem());`
+            },
+            java: {
+                language: 'java',
+                theme: 'vs-dark',
+                value: `// Welcome to Java!
+// Write your solution here
+
+public class Solution {
+    public static void main(String[] args) {
+        // Your code here
+        System.out.println("Hello, World!");
+    }
+}`
+            },
+            cpp: {
+                language: 'cpp',
+                theme: 'vs-dark',
+                value: `// Welcome to C++!
+// Write your solution here
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Your code here
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
+            }
+        };
+
+        // Create editor instance
+        editor = monaco.editor.create(document.getElementById('editorContainer'), {
+            ...languageConfigs.python,
+            automaticLayout: true,
+            minimap: { enabled: false },
+            fontSize: 14,
+            lineNumbers: 'on',
+            roundedSelection: false,
+            scrollBeyondLastLine: false,
+            readOnly: false,
+            cursorStyle: 'line',
+            theme: 'vs-dark'
+        });
+
+        // Set initial language
+        updateEditorLanguage('python');
+    });
+}
+
+// Set up event listeners for editor controls
+function setupEditorEventListeners() {
+    const languageSelect = document.getElementById('languageSelect');
+    const runCodeBtn = document.getElementById('runCodeBtn');
+    const clearOutputBtn = document.getElementById('clearOutputBtn');
+
+    languageSelect.addEventListener('change', function() {
+        const newLanguage = this.value;
+        updateEditorLanguage(newLanguage);
+    });
+
+    runCodeBtn.addEventListener('click', function() {
+        runCode();
+    });
+
+    clearOutputBtn.addEventListener('click', function() {
+        clearOutput();
+    });
+}
+
+// Update editor language and content
+function updateEditorLanguage(language) {
+    if (!editor) return;
+    
+    currentLanguage = language;
+    
+    const languageConfigs = {
+        python: {
+            language: 'python',
+            value: `# Welcome to Python!
+# Write your solution here
+
+def solve_problem():
+    # Your code here
+    pass
+
+# Test your solution
+if __name__ == "__main__":
+    result = solve_problem()
+    print(result)`
+        },
+        javascript: {
+            language: 'javascript',
+            value: `// Welcome to JavaScript!
+// Write your solution here
+
+function solveProblem() {
+    // Your code here
+    return null;
+}
+
+// Test your solution
+console.log(solveProblem());`
+        },
+        java: {
+            language: 'java',
+            value: `// Welcome to Java!
+// Write your solution here
+
+public class Solution {
+    public static void main(String[] args) {
+        // Your code here
+        System.out.println("Hello, World!");
+    }
+}`
+        },
+        cpp: {
+            language: 'cpp',
+            value: `// Welcome to C++!
+// Write your solution here
+
+#include <iostream>
+using namespace std;
+
+int main() {
+    // Your code here
+    cout << "Hello, World!" << endl;
+    return 0;
+}`
+        }
+    };
+
+    const config = languageConfigs[language];
+    monaco.editor.setModelLanguage(editor.getModel(), config.language);
+    editor.setValue(config.value);
+}
+
+// Run code function (placeholder for now)
+function runCode() {
+    const code = editor.getValue();
+    const outputPanel = document.getElementById('outputPanel');
+    
+    // For now, just display the code (we'll add execution later)
+    outputPanel.innerHTML = `<span class="text-green-600">✓ Code ready to execute!</span><br><span class="text-slate-600">Language: ${currentLanguage}</span><br><span class="text-slate-600">Lines: ${code.split('\n').length}</span>`;
+    
+    // TODO: Send code to backend for execution
+    console.log('Code to execute:', code);
+    console.log('Language:', currentLanguage);
+}
+
+// Clear output function
+function clearOutput() {
+    const outputPanel = document.getElementById('outputPanel');
+    outputPanel.innerHTML = '<span class="text-slate-400">// Output cleared...</span>';
+}
+
 recordBtn.addEventListener("click", async () => {
   if (!isRecording) {
     isRecording = true;
