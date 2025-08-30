@@ -11,6 +11,7 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { createRequire } from 'module';
+import Docker from 'dockerode';
 const require = createRequire(import.meta.url);
 const pdfParse = require('pdf-parse');
 
@@ -78,6 +79,341 @@ const bucket = storageClient.bucket(bucketName);
 
 // OpenAI setup
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Initialize Docker client
+const docker = new Docker();
+
+// Test Docker connectivity
+app.get('/test-docker', async (req, res) => {
+  try {
+    console.log('🧪 Testing Docker connectivity...');
+    
+    // Test if Docker daemon is accessible
+    const info = await docker.info();
+    console.log('✅ Docker daemon accessible');
+    
+    // Test if we can list images
+    const images = await docker.listImages();
+    console.log(`✅ Found ${images.length} Docker images`);
+    
+    // Test if Python image exists
+    const pythonImage = images.find(img => img.RepoTags && img.RepoTags.includes('python:3.9-slim'));
+    if (pythonImage) {
+      console.log('✅ Python image found');
+    } else {
+      console.log('⚠️ Python image not found, pulling...');
+      await docker.pull('python:3.9-slim');
+      console.log('✅ Python image pulled');
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Docker is working correctly',
+      dockerInfo: info,
+      imageCount: images.length
+    });
+  } catch (error) {
+    console.error('❌ Docker test failed:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      type: 'Docker connectivity issue'
+    });
+  }
+});
+
+// Code execution endpoint
+app.post('/execute-code', async (req, res) => {
+  try {
+    const { code, language } = req.body;
+    
+    if (!code || !language) {
+      return res.status(400).json({ error: 'Code and language required' });
+    }
+    
+    console.log(`Executing ${language} code...`);
+    
+    let result;
+    switch (language) {
+      case 'python':
+        result = await executePythonCode(code);
+        break;
+      case 'javascript':
+        result = await executeJavaScriptCode(code);
+        break;
+      default:
+        return res.status(400).json({ error: 'Language not yet supported' });
+    }
+    
+    res.json({ success: true, output: result });
+  } catch (error) {
+    console.error('Code execution error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Python execution with Docker
+async function executePythonCode(code) {
+  return new Promise(async (resolve, reject) => {
+    let container = null;
+    let filePath = null;
+    
+    try {
+      console.log('🐍 Starting Python execution...');
+      
+      // Create temporary file
+      const tempDir = path.join(__dirname, 'temp');
+      if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir);
+      }
+      
+      const fileName = `code_${Date.now()}.py`;
+      filePath = path.join(tempDir, fileName);
+      fs.writeFileSync(filePath, code);
+      console.log(`📝 Created temp file: ${filePath}`);
+      
+      // Create and run Docker container
+      console.log('🐳 Creating Docker container...');
+      container = await docker.createContainer({
+        Image: 'python:3.9-slim',
+        Cmd: ['python', `/tmp/${fileName}`],
+        HostConfig: {
+          Binds: [`${filePath}:/tmp/${fileName}:ro`],
+          Memory: 100 * 1024 * 1024, // 100MB limit
+          MemorySwap: 100 * 1024 * 1024,
+          CpuPeriod: 100000,
+          CpuQuota: 50000, // 50% CPU limit
+          NetworkMode: 'none', // No network access
+          ReadOnlyRootfs: true,
+          SecurityOpt: ['no-new-privileges:true']
+        },
+        WorkingDir: '/tmp',
+        Tty: false,
+        OpenStdin: false
+      });
+      
+      console.log('🚀 Starting container...');
+      await container.start();
+      console.log('✅ Container started successfully');
+      
+      // Wait for completion with timeout
+      const timeout = setTimeout(async () => {
+        console.log('⏰ Timeout reached, stopping container...');
+        try {
+          if (container) {
+            await container.stop();
+            await container.remove();
+          }
+          if (filePath && fs.existsSync(filePath)) {
+            fs.unlinkSync(filePath);
+          }
+          reject(new Error('Execution timeout (10 seconds)'));
+        } catch (e) {
+          console.error('❌ Timeout cleanup error:', e);
+        }
+      }, 10000); // 10 second timeout
+      
+      // Wait for container to finish
+      console.log('⏳ Waiting for container to finish...');
+      const exitCode = await container.wait();
+      console.log(`✅ Container finished with exit code: ${exitCode.StatusCode}`);
+      
+      // Get container logs AFTER completion
+      console.log('📋 Getting container logs...');
+      const logs = await container.logs({ stdout: true, stderr: true });
+      let output = logs.toString();
+      
+      // AGGRESSIVE cleaning - remove ALL weird Docker symbols and non-standard characters
+      output = output
+        // Remove all Docker artifacts and weird symbols (comprehensive list)
+        .replace(/[☺♂♣‼∟⌂☻♥♦♠♣•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼]/g, '')
+        // Remove any other non-printable characters except basic punctuation
+        .replace(/[^\x20-\x7E\n\r\t]/g, '')
+        // Normalize line endings
+        .replace(/\r\n/g, '\n')
+        // Remove empty lines and normalize spacing
+        .replace(/\n\s*\n/g, '\n')
+        .trim();  // Remove extra whitespace
+      
+      console.log(`📤 Clean container output: "${output}"`);
+      
+      // Cleanup
+      clearTimeout(timeout);
+      
+      // Try to stop and remove container, but don't fail if already stopped
+      try {
+        await container.stop();
+      } catch (e) {
+        if (e.statusCode !== 304) { // 304 means already stopped
+          console.log('⚠️ Container stop warning:', e.message);
+        } else {
+          console.log('✅ Container already stopped naturally');
+        }
+      }
+      
+      try {
+        await container.remove();
+      } catch (e) {
+        if (e.statusCode !== 304) { // 304 means already removed
+          console.log('⚠️ Container remove warning:', e.message);
+        } else {
+          console.log('✅ Container already removed naturally');
+        }
+      }
+      
+      // Clean up temp file
+      if (filePath && fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      
+      resolve(output);
+      
+    } catch (error) {
+      console.error('❌ Python execution error:', error);
+      
+      // Cleanup on error
+      // Cleanup on error
+      if (container) {
+        try {
+          await container.stop();
+        } catch (e) {
+          if (e.statusCode !== 304) {
+            console.log('⚠️ Container stop warning:', e.message);
+          } else {
+            console.log('✅ Container already stopped naturally');
+          }
+        }
+        
+        try {
+          await container.remove();
+        } catch (e) {
+          if (e.statusCode !== 304) {
+            console.log('⚠️ Container remove warning:', e.message);
+          } else {
+            console.log('✅ Container already removed naturally');
+          }
+        }
+      }
+      
+      if (filePath && fs.existsSync(filePath)) {
+        try {
+          fs.unlinkSync(filePath);
+        } catch (cleanupError) {
+          console.error('❌ Error cleaning up file:', cleanupError);
+        }
+      }
+      
+      reject(new Error(`Python execution failed: ${error.message}`));
+    }
+  });
+}
+
+// JavaScript execution (safer Node.js approach)
+async function executeJavaScriptCode(code) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Create temporary file
+      const tempDir = path.join(__dirname, 'temp');
+      if (!fs.existsSync(tempDir)) {
+        fs.mkdirSync(tempDir);
+      }
+      
+      const fileName = `code_${Date.now()}.js`;
+      const filePath = path.join(tempDir, fileName);
+      fs.writeFileSync(filePath, code);
+      
+      // Create and run Docker container
+      const container = await docker.createContainer({
+        Image: 'node:18-alpine',
+        Cmd: ['node', `/tmp/${fileName}`],
+        HostConfig: {
+          Binds: [`${filePath}:/tmp/${fileName}:ro`],
+          Memory: 100 * 1024 * 1024, // 100MB limit
+          MemorySwap: 100 * 1024 * 1024,
+          CpuPeriod: 100000,
+          CpuQuota: 50000, // 50% CPU limit
+          NetworkMode: 'none', // No network access
+          ReadOnlyRootfs: true,
+          SecurityOpt: ['no-new-privileges:true']
+        },
+        WorkingDir: '/tmp',
+        Tty: false,
+        OpenStdin: false
+      });
+      
+      // Start container with timeout
+      await container.start();
+      
+      // Wait for completion with timeout
+      const timeout = setTimeout(async () => {
+        try {
+          await container.stop();
+          await container.remove();
+          fs.unlinkSync(filePath);
+          reject(new Error('Execution timeout (10 seconds)'));
+        } catch (e) {
+          console.error('Timeout cleanup error:', e);
+        }
+      }, 10000); // 10 second timeout
+      
+      // Wait for container to finish
+      const exitCode = await container.wait();
+      console.log(`Container finished with exit code: ${exitCode.StatusCode}`);
+      
+      // Get container logs AFTER completion
+      const logs = await container.logs({ stdout: true, stderr: true });
+      let output = logs.toString();
+      
+      // AGGRESSIVE cleaning - remove ALL weird Docker symbols and non-standard characters
+      output = output
+        // Remove all Docker artifacts and weird symbols (comprehensive list)
+        .replace(/[☺♂♣‼∟⌂☻♥♦♠♣•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼]/g, '')
+        // Remove any other non-printable characters except basic punctuation
+        .replace(/[^\x20-\x7E\n\r\t]/g, '')
+        // Normalize line endings
+        .replace(/\r\n/g, '\n')
+        // Remove empty lines and normalize spacing
+        .replace(/\n\s*\n/g, '\n')
+        .trim();  // Remove extra whitespace
+      
+      console.log(`📤 Clean container output: "${output}"`);
+      
+      // Cleanup
+      clearTimeout(timeout);
+      
+      // Try to stop and remove container, but don't fail if already stopped
+      try {
+        await container.stop();
+      } catch (e) {
+        if (e.statusCode !== 304) { // 304 means already stopped
+          console.log('⚠️ Container stop warning:', e.message);
+        } else {
+          console.log('✅ Container already stopped naturally');
+        }
+      }
+      
+      try {
+        await container.remove();
+      } catch (e) {
+        if (e.statusCode !== 304) { // 304 means already removed
+          console.log('⚠️ Container remove warning:', e.message);
+        } else {
+          console.log('✅ Container already removed naturally');
+        }
+      }
+      
+      // Clean up temp file
+      if (filePath && fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+      
+      resolve(output);
+      
+    } catch (error) {
+      reject(new Error(`JavaScript execution failed: ${error.message}`));
+    }
+  });
+}
 
 // Serve index.html at root
 app.get('/', (req, res) => {

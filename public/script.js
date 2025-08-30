@@ -4,7 +4,6 @@ const recordLabel = document.getElementById("recordLabel");
 const status = document.getElementById("status");
 const chatMessages = document.getElementById("chatMessages");
 const resumeUploadArea = document.getElementById("resumeUploadArea");
-const resumeInput = document.getElementById("resumeInput");
 const resumeStatus = document.getElementById("resumeStatus");
 const resetResumeBtn = document.getElementById("resetResumeBtn");
 const textInput = document.getElementById("textInput");
@@ -29,14 +28,24 @@ let currentLanguage = 'python';
 document.addEventListener('DOMContentLoaded', function() {
     initializeMonacoEditor();
     setupEditorEventListeners();
+    initializeSplitPane();
 });
 
 // Initialize Monaco Editor
 function initializeMonacoEditor() {
+    // Check if Monaco is already loaded
+    if (typeof require === 'undefined') {
+        console.error('Monaco Editor loader not found');
+        return;
+    }
+    
     require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.45.0/min/vs' } });
     
-    require(['vs/editor/editor.main'], function() {
-        // Set up language-specific configurations
+            require(['vs/editor/editor.main'], function() {
+            console.log('Monaco Editor loaded successfully');
+            
+            try {
+                // Set up language-specific configurations
         const languageConfigs = {
             python: {
                 language: 'python',
@@ -98,7 +107,13 @@ int main() {
         };
 
         // Create editor instance
-        editor = monaco.editor.create(document.getElementById('editorContainer'), {
+        const editorContainer = document.getElementById('editorContainer');
+        if (!editorContainer) {
+            console.error('Editor container not found');
+            return;
+        }
+
+        editor = monaco.editor.create(editorContainer, {
             ...languageConfigs.python,
             automaticLayout: true,
             minimap: { enabled: false },
@@ -113,6 +128,18 @@ int main() {
 
         // Set initial language
         updateEditorLanguage('python');
+        
+        console.log('Monaco Editor initialized successfully');
+        
+        // Add a fallback for when Monaco fails to initialize
+        } catch (error) {
+            console.error('Failed to initialize Monaco Editor:', error);
+            // Show fallback message in editor container
+            const editorContainer = document.getElementById('editorContainer');
+            if (editorContainer) {
+                editorContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500"><p>Code editor failed to load. Please refresh the page.</p></div>';
+            }
+        }
     });
 }
 
@@ -121,6 +148,7 @@ function setupEditorEventListeners() {
     const languageSelect = document.getElementById('languageSelect');
     const runCodeBtn = document.getElementById('runCodeBtn');
     const clearOutputBtn = document.getElementById('clearOutputBtn');
+    const toggleOutputBtn = document.getElementById('toggleOutputBtn');
 
     languageSelect.addEventListener('change', function() {
         const newLanguage = this.value;
@@ -133,6 +161,44 @@ function setupEditorEventListeners() {
 
     clearOutputBtn.addEventListener('click', function() {
         clearOutput();
+    });
+
+    // Toggle output section visibility
+    toggleOutputBtn.addEventListener('click', function() {
+        const outputSection = document.getElementById('outputSection');
+        const verticalDivider = document.getElementById('verticalSplitDivider');
+        const isCollapsed = outputSection.classList.contains('output-section-collapsed');
+        
+        if (isCollapsed) {
+            // Expand
+            outputSection.classList.remove('output-section-collapsed');
+            verticalDivider.classList.remove('vertical-split-divider-collapsed');
+            outputSection.style.height = '200px';
+            outputSection.style.overflow = 'auto';
+            outputSection.style.border = '';
+            outputSection.style.padding = '';
+            verticalDivider.style.height = '6px';
+            verticalDivider.style.overflow = 'visible';
+            this.textContent = '📊';
+            this.title = 'Hide Output Panel';
+        } else {
+            // Collapse
+            outputSection.classList.add('output-section-collapsed');
+            verticalDivider.classList.add('vertical-split-divider-collapsed');
+            outputSection.style.height = '0px';
+            outputSection.style.overflow = 'hidden';
+            outputSection.style.border = 'none';
+            outputSection.style.padding = '0';
+            verticalDivider.style.height = '0px';
+            verticalDivider.style.overflow = 'hidden';
+            this.textContent = '📈';
+            this.title = 'Show Output Panel';
+        }
+        
+        // Trigger Monaco editor resize if available
+        if (window.monaco && editor) {
+            setTimeout(() => editor.layout(), 300);
+        }
     });
 }
 
@@ -203,23 +269,178 @@ int main() {
     editor.setValue(config.value);
 }
 
-// Run code function (placeholder for now)
-function runCode() {
+// Run code function (updated for Docker execution)
+async function runCode() {
     const code = editor.getValue();
     const outputPanel = document.getElementById('outputPanel');
     
-    // For now, just display the code (we'll add execution later)
-    outputPanel.innerHTML = `<span class="text-green-600">✓ Code ready to execute!</span><br><span class="text-slate-600">Language: ${currentLanguage}</span><br><span class="text-slate-600">Lines: ${code.split('\n').length}</span>`;
-    
-    // TODO: Send code to backend for execution
-    console.log('Code to execute:', code);
-    console.log('Language:', currentLanguage);
+    try {
+        // Show loading state with terminal-like styling
+        outputPanel.innerHTML = `
+            <div class="terminal-header bg-gray-800 text-green-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+                <span class="flex items-center">
+                    <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                    <span class="text-green-400 mr-3"></span>
+                    <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                    <span class="text-gray-400">Terminal</span>
+                </span>
+            </div>
+            <div class="terminal-body bg-gray-900 text-green-400 p-3 rounded-b-lg font-mono text-sm">
+                <div class="flex items-center">
+                    <span class="text-green-400 mr-2">$</span>
+                    <span class="text-blue-400">${currentLanguage === 'python' ? 'python' : 'node'} script</span>
+                    <span class="text-gray-500 ml-2"># Executing in secure container...</span>
+                </div>
+            </div>
+        `;
+        
+        const response = await fetch('/execute-code', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                code: code, 
+                language: currentLanguage 
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Format output like a real terminal
+            const formattedOutput = formatTerminalOutput(data.output);
+            outputPanel.innerHTML = `
+                <div class="terminal-header bg-gray-800 text-green-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+                    <span class="flex items-center">
+                        <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        <span class="text-gray-400">Terminal</span>
+                    </span>
+                </div>
+                <div class="terminal-body bg-gray-900 text-green-400 p-3 rounded-b-lg font-mono text-sm">
+                    <div class="flex items-center mb-2">
+                        <span class="text-green-400 mr-2">$</span>
+                        <span class="text-blue-400">${currentLanguage === 'python' ? 'python' : 'node'} script</span>
+                        <span class="text-gray-500 ml-2"># Execution completed successfully</span>
+                    </div>
+                    <div class="terminal-output bg-black bg-opacity-50 p-2 rounded border border-gray-700 mt-2">
+                        ${formattedOutput}
+                    </div>
+                </div>
+            `;
+        } else {
+            // Show error in terminal style
+            outputPanel.innerHTML = `
+                <div class="terminal-header bg-gray-800 text-red-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+                    <span class="flex items-center">
+                        <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                        <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                        <span class="text-gray-400">Terminal</span>
+                    </span>
+                </div>
+                <div class="terminal-body bg-gray-900 text-red-400 p-3 rounded-b-lg font-mono text-sm">
+                    <div class="flex items-center mb-2">
+                        <span class="text-red-400 mr-2">$</span>
+                    <span class="text-red-400">Error</span>
+                        <span class="text-gray-500 ml-2"># Execution failed</span>
+                    </div>
+                    <div class="terminal-output bg-black bg-opacity-50 p-2 rounded border border-gray-700 mt-2 text-red-300">
+                        ${data.error}
+                    </div>
+                </div>
+            `;
+        }
+    } catch (error) {
+        // Show network/connection errors
+        outputPanel.innerHTML = `
+            <div class="terminal-header bg-gray-800 text-red-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+                <span class="flex items-center">
+                    <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                    <span class="text-red-400 mr-3"></span>
+                    <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                    <span class="text-gray-400">Terminal</span>
+                </span>
+            </div>
+            <div class="terminal-body bg-gray-900 text-red-400 p-3 rounded-b-lg font-mono text-sm">
+                <div class="flex items-center mb-2">
+                    <span class="text-red-400 mr-2">$</span>
+                    <span class="text-red-400">Connection Error</span>
+                    <span class="text-gray-500 ml-2"># Network issue</span>
+                </div>
+                <div class="terminal-output bg-black bg-opacity-50 p-2 rounded border border-gray-700 mt-2 text-red-300">
+                    ${error.message}
+                </div>
+            </div>
+        `;
+    }
 }
 
 // Clear output function
 function clearOutput() {
     const outputPanel = document.getElementById('outputPanel');
-    outputPanel.innerHTML = '<span class="text-slate-400">// Output cleared...</span>';
+    outputPanel.innerHTML = `
+        <div class="terminal-header bg-gray-800 text-gray-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+            <span class="flex items-center">
+                <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                <span class="text-gray-400">Terminal</span>
+            </span>
+        </div>
+        <div class="terminal-body bg-gray-900 text-gray-400 p-3 rounded-b-lg font-mono text-sm">
+            <div class="flex items-center">
+                <span class="text-gray-500 mr-2">$</span>
+                <span class="text-gray-500">clear</span>
+                <span class="text-gray-600 ml-2"># Output cleared</span>
+            </div>
+        </div>
+    `;
+}
+
+// Format terminal output with proper styling
+function formatTerminalOutput(output) {
+    if (!output) return '<span class="text-gray-500">(no output)</span>';
+    
+    // AGGRESSIVE cleaning - remove ALL weird Docker symbols and non-standard characters
+    let cleanOutput = output
+        // Remove all Docker artifacts and weird symbols (comprehensive list)
+        .replace(/[☺♂♣‼∟⌂☻♥♦♠♣•◘○◙♂♀♪♫☼►◄↕‼¶§▬↨↑↓→←∟↔▲▼]/g, '')
+        // Remove any other non-printable characters except basic punctuation
+        .replace(/[^\x20-\x7E\n\r\t]/g, '')
+        // Remove empty lines and normalize spacing
+        .replace(/\n\s*\n/g, '\n')
+        .trim();
+    
+    // Split output into lines and format each line
+    const lines = cleanOutput.split('\n');
+    const formattedLines = lines.map(line => {
+        if (line.trim() === '') return '<br>';
+        
+        // Detect different types of output and style accordingly
+        if (line.includes('Error:') || line.includes('Traceback:')) {
+            return `<span class="text-red-400">${escapeHtml(line)}</span><br>`;
+        } else if (line.includes('Warning:') || line.includes('DeprecationWarning:')) {
+            return `<span class="text-yellow-400">${escapeHtml(line)}</span><br>`;
+        } else if (line.match(/^\s*>>>/)) {
+            return `<span class="text-blue-400">${escapeHtml(line)}</span><br>`;
+        } else if (line.match(/^\s*\.\.\./)) {
+            return `<span class="text-blue-400">${escapeHtml(line)}</span><br>`;
+        } else {
+            return `<span class="text-green-300">${escapeHtml(line)}</span><br>`;
+        }
+    });
+    
+    return formattedLines.join('');
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 recordBtn.addEventListener("click", async () => {
@@ -227,7 +448,6 @@ recordBtn.addEventListener("click", async () => {
     isRecording = true;
     conversationEnded = false; // Reset the flag when starting
     recordBtn.classList.add("recording");
-    recordLabel.textContent = "Click to stop recording";
     status.textContent = "Recording... Speak now!";
     await startRecording();
   } else {
@@ -271,7 +491,6 @@ async function startRecording() {
     status.textContent = "Error starting recording. Please check your microphone permissions.";
     isRecording = false;
     recordBtn.classList.remove("recording");
-    recordLabel.textContent = "Click to start recording";
   }
 }
 
@@ -336,7 +555,6 @@ function stopRecording(isManual = false) {
   if (isManual) {
     conversationEnded = true; // Mark conversation as ended
     recordBtn.classList.remove("recording");
-    recordLabel.textContent = "Click to start recording";
     status.textContent = "Conversation ended.";
   }
 }
@@ -360,16 +578,15 @@ async function uploadAudio(blob) {
     
     status.textContent = "AI responded! Starting to listen for your next answer...";
     
-    // Only auto-restart if conversation wasn't manually ended
+        // Only auto-restart if conversation wasn't manually ended
     if (!conversationEnded) {
-      setTimeout(() => {
-        if (!isRecording && !conversationEnded) {
-          isRecording = true;
-          // Don't change button text - keep it as "Stop Recording"
-          status.textContent = "Recording... Speak now!";
-          startRecording();
-        }
-      }, 1000); // 1 second delay to let user read the AI response
+        setTimeout(() => {
+            if (!isRecording && !conversationEnded) {
+                isRecording = true;
+                status.textContent = "Recording... Speak now!";
+                startRecording();
+            }
+        }, 1000); // 1 second delay to let user read the AI response
     }
     
   } catch (err) {
@@ -395,7 +612,7 @@ function addMessageToChat(sender, message, type) {
     : 'bg-white rounded-2xl rounded-tl-md px-4 py-3 shadow-sm border border-slate-200';
   
   const messageText = document.createElement('p');
-  messageText.className = type === 'user' ? '' : 'text-slate-800';
+  messageText.className = type === 'user' ? 'text-black' : 'text-slate-800';
   messageText.textContent = message;
   
   const senderLabel = document.createElement('p');
@@ -502,32 +719,19 @@ function showNotification(message, type = 'info') {
     }, 300);
   }, 4000);
 }
-//Resume upload functionality
-resumeUploadArea.addEventListener('click', () => {
+// Resume upload functionality - Updated for new button
+const resumeUploadBtn = document.getElementById('resumeUploadBtn');
+const resumeInput = document.createElement('input');
+resumeInput.type = 'file';
+resumeInput.accept = '.pdf';
+resumeInput.style.display = 'none';
+document.body.appendChild(resumeInput);
+
+resumeUploadBtn.addEventListener('click', () => {
   resumeInput.click();
 });
 
-resumeUploadArea.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  resumeUploadArea.classList.add('border-primary-400', 'bg-primary-50');
-});
 
-resumeUploadArea.addEventListener('dragleave', (e) => {
-  e.preventDefault();
-  resumeUploadArea.classList.remove('border-primary-400', 'bg-primary-50');
-});
-
-resumeUploadArea.addEventListener('drop', (e) => {
-  e.preventDefault();
-  resumeUploadArea.classList.remove('border-primary-400', 'bg-primary-50');
-  
-  const files = e.dataTransfer.files;
-  if (files.length > 0 && files[0].type === 'application/pdf') {
-    handleResumeUpload(files[0]);
-  } else {
-    showNotification('❌ Please upload a PDF file only', 'error');
-  }
-});
 
 resumeInput.addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
@@ -554,10 +758,10 @@ async function handleResumeUpload(file) {
   formData.append('resume', file);
   
   try {
-    resumeStatus.textContent = 'Processing resume...';
     resumeStatus.classList.remove('hidden');
-    resumeUploadArea.style.pointerEvents = 'none';
-    resumeUploadArea.style.opacity = '0.6';
+    resumeStatus.querySelector('p').textContent = 'Processing resume...';
+    resumeUploadBtn.disabled = true;
+    resumeUploadBtn.style.opacity = '0.6';
     
     console.log('Sending upload request...');
     const response = await fetch('/upload-resume', {
@@ -571,9 +775,9 @@ async function handleResumeUpload(file) {
     
          if (response.ok && data.initialQuestion) {
        resumeUploaded = true;
-       resumeStatus.textContent = `✅ Resume processed successfully! (${data.textLength} characters extracted)`;
-       resumeStatus.className = 'mt-3 text-sm text-green-600';
-       resetResumeBtn.classList.remove('hidden');
+               resumeStatus.classList.remove('hidden');
+        resumeStatus.querySelector('p').textContent = `✅ Resume processed successfully! (${data.textLength} characters extracted)`;
+        resetResumeBtn.classList.remove('hidden');
        
        // Add initial AI question based on resume
        addMessageToChat('AI Interviewer', data.initialQuestion, 'ai');
@@ -599,12 +803,13 @@ async function handleResumeUpload(file) {
        errorMessage = 'Network error. Please check your connection and try again.';
      }
      
-     resumeStatus.textContent = `❌ Error: ${errorMessage}`;
-     resumeStatus.className = 'mt-3 text-sm text-red-600';
+           resumeStatus.classList.remove('hidden');
+      resumeStatus.querySelector('p').textContent = `❌ Error: ${errorMessage}`;
+      resumeStatus.querySelector('p').className = 'text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg inline-block shadow-sm border border-red-200';
      showNotification(`❌ ${errorMessage}`, 'error');
   } finally {
-    resumeUploadArea.style.pointerEvents = 'auto';
-    resumeUploadArea.style.opacity = '1';
+    resumeUploadBtn.disabled = false;
+    resumeUploadBtn.style.opacity = '1';
   }
 }
 // Reset resume functionality
@@ -647,7 +852,6 @@ sendTextBtn.addEventListener('click', async () => {
   
   try {
     sendTextBtn.disabled = true;
-    sendTextBtn.textContent = 'Sending...';
     status.textContent = 'Processing your response...';
     
     const response = await fetch('/chat', {
@@ -671,7 +875,6 @@ sendTextBtn.addEventListener('click', async () => {
     status.textContent = 'Error occurred. Please try again.';
   } finally {
     sendTextBtn.disabled = false;
-    sendTextBtn.textContent = 'Send Response';
   }
 });
 
@@ -728,3 +931,287 @@ testBtn.addEventListener('click', async () => {
     testBtn.textContent = '🔍 Test System';
   }
 });
+
+// Split Pane Functionality
+function initializeSplitPane() {
+    const splitPane = document.querySelector('.split-pane');
+    const leftPane = document.querySelector('.split-pane-left');
+    const rightPane = document.querySelector('.split-pane-right');
+    const divider = document.getElementById('splitDivider');
+    
+    console.log('Split pane elements found:', { splitPane, leftPane, rightPane, divider });
+    
+    if (!splitPane || !leftPane || !rightPane || !divider) {
+        console.error('Split pane elements not found');
+        return;
+    }
+    
+    // Initialize output panel with terminal styling
+    const outputPanel = document.getElementById('outputPanel');
+    if (outputPanel) {
+        outputPanel.innerHTML = `
+            <div class="terminal-header bg-gray-800 text-gray-400 px-3 py-2 rounded-t-lg border-b border-gray-700 font-mono text-xs">
+                <span class="flex items-center">
+                    <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
+                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
+                    <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+                    <span class="text-gray-400">Terminal</span>
+                </span>
+            </div>
+            <div class="terminal-body bg-gray-900 text-gray-400 p-3 rounded-b-lg font-mono text-sm">
+                <div class="flex items-center">
+                    <span class="text-gray-500 mr-2">$</span>
+                    <span class="text-gray-500">Ready</span>
+                    <span class="text-gray-600 ml-2"># Waiting for code execution...</span>
+                </div>
+            </div>
+        `;
+    }
+    
+    let isResizing = false;
+    let startX, startLeftWidth, startRightWidth;
+
+    function startResize(e) {
+        isResizing = true;
+        startX = e.clientX;
+        startLeftWidth = leftPane.offsetWidth;
+        startRightWidth = rightPane.offsetWidth;
+        
+        // Visual feedback during resize
+        divider.style.background = '#3b82f6';
+        divider.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.3)';
+        
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+        
+        // Prevent text selection during resize
+        e.preventDefault();
+    }
+
+    function resize(e) {
+        if (!isResizing) return;
+        
+        const deltaX = e.clientX - startX;
+        const newLeftWidth = startLeftWidth + deltaX;
+        const newRightWidth = startRightWidth - deltaX;
+        
+        // Minimum widths
+        const minWidth = 300;
+        
+        if (newLeftWidth >= minWidth && newRightWidth >= minWidth) {
+            // Use flex-basis for better flexbox compatibility
+            const totalWidth = splitPane.offsetWidth;
+            const leftPercentage = (newLeftWidth / totalWidth) * 100;
+            const rightPercentage = (newRightWidth / totalWidth) * 100;
+            
+            leftPane.style.flexBasis = leftPercentage + '%';
+            rightPane.style.flexBasis = rightPercentage + '%';
+        }
+    }
+
+    function stopResize() {
+        isResizing = false;
+        
+        // Reset visual feedback
+        divider.style.background = '#e5e7eb';
+        divider.style.boxShadow = 'none';
+        
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', stopResize);
+    }
+
+    // Add event listeners with improved responsiveness
+    divider.addEventListener('mousedown', startResize);
+    divider.addEventListener('mouseenter', function() {
+        divider.style.cursor = 'col-resize';
+        divider.style.background = '#3b82f6';
+    });
+    divider.addEventListener('mouseleave', function() {
+        if (!isResizing) {
+            divider.style.cursor = 'col-resize';
+            divider.style.background = '#e5e7eb';
+        }
+    });
+    
+    // Make the entire divider area responsive
+    const resizeHandle = divider.querySelector('.resize-handle');
+    if (resizeHandle) {
+        resizeHandle.addEventListener('mousedown', startResize);
+        resizeHandle.addEventListener('mouseenter', function() {
+            divider.style.cursor = 'col-resize';
+            divider.style.background = '#3b82f6';
+        });
+    }
+    
+
+    
+    // Touch support for mobile
+    divider.addEventListener('touchstart', function(e) {
+        startResize(e.touches[0]);
+    });
+    
+    document.addEventListener('touchend', stopResize);
+    document.addEventListener('touchmove', function(e) {
+        if (isResizing) {
+            resize(e.touches[0]);
+        }
+    });
+    
+
+
+    // Initialize with 50/50 split using flex-basis
+    leftPane.style.flexBasis = '50%';
+    rightPane.style.flexBasis = '50%';
+    
+    console.log('Split pane initialized successfully');
+    console.log('Initial pane sizes:', {
+        leftWidth: leftPane.offsetWidth,
+        rightWidth: rightPane.offsetWidth,
+        leftFlexBasis: leftPane.style.flexBasis,
+        rightFlexBasis: rightPane.style.flexBasis
+    });
+    
+    // Initialize vertical split pane for code editor and output
+    initializeVerticalSplitPane();
+}
+
+// Vertical Split Pane Functionality for Code Editor and Output
+function initializeVerticalSplitPane() {
+    const rightPane = document.querySelector('.split-pane-right');
+    const editorContainer = document.getElementById('editorContainer');
+    const outputSection = document.getElementById('outputSection');
+    const verticalDivider = document.getElementById('verticalSplitDivider');
+    
+    console.log('Vertical split pane elements found:', { rightPane, editorContainer, outputSection, verticalDivider });
+    
+    if (!rightPane || !editorContainer || !outputSection || !verticalDivider) {
+        console.error('Vertical split pane elements not found');
+        return;
+    }
+    
+    let isVerticalResizing = false;
+    let startY, startEditorHeight, startOutputHeight;
+    
+    function startVerticalResize(e) {
+        isVerticalResizing = true;
+        startY = e.clientY;
+        startEditorHeight = editorContainer.offsetHeight;
+        startOutputHeight = outputSection.offsetHeight;
+        
+        // Visual feedback during resize
+        verticalDivider.style.background = '#3b82f6';
+        verticalDivider.style.boxShadow = '0 0 0 2px rgba(59, 130, 246, 0.3)';
+        
+        document.addEventListener('mousemove', verticalResize);
+        document.addEventListener('mouseup', stopVerticalResize);
+        
+        // Prevent text selection during resize
+        e.preventDefault();
+    }
+    
+         function verticalResize(e) {
+         if (!isVerticalResizing) return;
+         
+         const deltaY = e.clientY - startY;
+         const newEditorHeight = startEditorHeight + deltaY;
+         const newOutputHeight = startOutputHeight - deltaY;
+         
+         // Allow output to be completely hidden (minimum height 0)
+         const minEditorHeight = 200;
+         const minOutputHeight = 0;
+         
+         if (newEditorHeight >= minEditorHeight && newOutputHeight >= minOutputHeight) {
+             editorContainer.style.height = newEditorHeight + 'px';
+             
+             // If output height is very small, hide it completely
+             if (newOutputHeight <= 10) {
+                 outputSection.style.height = '0px';
+                 outputSection.style.overflow = 'hidden';
+                 outputSection.style.border = 'none';
+                 outputSection.style.padding = '0';
+                 
+                 // Hide the vertical divider as well
+                 verticalDivider.style.height = '0px';
+                 verticalDivider.style.overflow = 'hidden';
+                 
+                 // Add collapsed class for CSS styling
+                 outputSection.classList.add('output-section-collapsed');
+                 verticalDivider.classList.add('vertical-split-divider-collapsed');
+             } else {
+                 outputSection.style.height = newOutputHeight + 'px';
+                 outputSection.style.overflow = 'auto';
+                 outputSection.style.border = '';
+                 outputSection.style.padding = '';
+                 
+                 // Show the vertical divider
+                 verticalDivider.style.height = '6px';
+                 verticalDivider.style.overflow = 'visible';
+                 
+                 // Remove collapsed classes
+                 outputSection.classList.remove('output-section-collapsed');
+                 verticalDivider.classList.remove('vertical-split-divider-collapsed');
+             }
+             
+             // Trigger Monaco editor resize if available
+             if (window.monaco && editor) {
+                 editor.layout();
+             }
+         }
+     }
+    
+    function stopVerticalResize() {
+        isVerticalResizing = false;
+        
+        // Reset visual feedback
+        verticalDivider.style.background = '#e5e7eb';
+        verticalDivider.style.boxShadow = 'none';
+        
+        document.removeEventListener('mousemove', verticalResize);
+        document.removeEventListener('mouseup', stopVerticalResize);
+    }
+    
+         // Add event listeners for vertical resize
+     verticalDivider.addEventListener('mousedown', startVerticalResize);
+     verticalDivider.addEventListener('mouseenter', function() {
+         verticalDivider.style.cursor = 'row-resize';
+         verticalDivider.style.background = '#3b82f6';
+     });
+     verticalDivider.addEventListener('mouseleave', function() {
+         if (!isVerticalResizing) {
+             verticalDivider.style.cursor = 'row-resize';
+             verticalDivider.style.background = '#e5e7eb';
+         }
+     });
+     
+     // Double-click to quickly toggle output section
+     verticalDivider.addEventListener('dblclick', function() {
+         const toggleOutputBtn = document.getElementById('toggleOutputBtn');
+         if (toggleOutputBtn) {
+             toggleOutputBtn.click();
+         }
+     });
+    
+    // Make the entire vertical divider area responsive
+    const verticalResizeHandle = verticalDivider.querySelector('.vertical-resize-handle');
+    if (verticalResizeHandle) {
+        verticalResizeHandle.addEventListener('mousedown', startVerticalResize);
+        verticalResizeHandle.addEventListener('mouseenter', function() {
+            verticalDivider.style.cursor = 'row-resize';
+            verticalDivider.style.background = '#3b82f6';
+        });
+    }
+    
+    // Touch support for mobile
+    verticalDivider.addEventListener('touchstart', function(e) {
+        startVerticalResize(e.touches[0]);
+    });
+    
+    document.addEventListener('touchend', stopVerticalResize);
+    document.addEventListener('touchmove', function(e) {
+        if (isVerticalResizing) {
+            verticalResize(e.touches[0]);
+        }
+    });
+    
+    console.log('Vertical split pane initialized successfully');
+}
