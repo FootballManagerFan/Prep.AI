@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Practice Problem</title>
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .problem-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .problem-category {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .run-button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .run-button:hover {
+            background: #059669;
+        }
+        
+        .clear-button {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .clear-button:hover {
+            background: #4b5563;
+        }
+        
+        .back-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        
+        .back-link:hover {
+            background: #f3f4f6;
+        }
+        
+        .main-container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+        
+        .left-panel {
+            flex: 1;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        
+        .right-panel {
+            flex: 1;
+            background: #1e1e1e;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .problem-description {
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .examples-section {
+            margin-bottom: 2rem;
+        }
+        
+        .examples-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .example {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .example-content {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+        }
+        
+        .constraints-section {
+            margin-bottom: 2rem;
+        }
+        
+        .constraints-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .constraints-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .constraints-list li {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .test-cases-section {
+            margin-bottom: 2rem;
+        }
+        
+        .test-cases-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        
+        .test-case {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-case-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-case-content {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .editor-container {
+            flex: 1;
+            position: relative;
+        }
+        
+        .editor-header {
+            background: #2d2d30;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #3e3e42;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .language-selector {
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #5a5a5a;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        
+        .output-panel {
+            height: 200px;
+            background: #1e1e1e;
+            border-top: 1px solid #3e3e42;
+            padding: 1rem;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            color: #d4d4d4;
+            white-space: pre-wrap;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+        
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/" class="back-link">← Back to Home</a>
+            <div>
+                <div class="problem-title" id="problemTitle">Loading Problem...</div>
+                <div class="problem-category" id="problemCategory">Loading...</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="run-button" onclick="runCode()">Run Code</button>
+            <button class="clear-button" onclick="clearOutput()">Clear Output</button>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="left-panel">
+            <div class="problem-description" id="problemDescription">
+                <div class="loading">Loading problem description...</div>
+            </div>
+            
+            <div class="examples-section">
+                <div class="examples-title">Examples:</div>
+                <div id="examplesContainer">
+                    <div class="loading">Loading examples...</div>
+                </div>
+            </div>
+            
+            <div class="constraints-section">
+                <div class="constraints-title">Constraints:</div>
+                <ul class="constraints-list" id="constraintsList">
+                    <div class="loading">Loading constraints...</div>
+                </ul>
+            </div>
+            
+            <div class="test-cases-section">
+                <div class="test-cases-title">Test Cases:</div>
+                <div id="testCasesList">
+                    <div class="loading">Loading test cases...</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="right-panel">
+            <div class="editor-header">
+                <span style="color: white; font-weight: 500;">Code Editor</span>
+                <select id="languageSelector" class="language-selector" onchange="changeLanguage()">
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                </select>
+            </div>
+            
+            <div class="editor-container">
+                <div id="editorContainer" style="height: 100%;"></div>
+            </div>
+            
+            <div class="output-panel" id="codeOutput">
+                # Output will appear here when you run your code
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let editor;
+        let currentProblem = null;
+        let currentLanguage = 'python';
+
+        // Initialize Monaco Editor
+        function initializeMonacoEditor() {
+            if (typeof require === 'undefined') {
+                console.error('Monaco Editor loader not found');
+                return;
+            }
+            
+            require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.45.0/min/vs' } });
+            require(['vs/editor/editor.main'], function() {
+                editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                    value: '# Welcome to Python!\n# Write your solution here\n\ndef solve_problem():\n    # Your code here\n    pass\n\n# Test your solution\nif __name__ == "__main__":\n    result = solve_problem()\n    print(result)',
+                    language: 'python',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    scrollBeyondLastLine: false,
+                    readOnly: false,
+                    theme: 'vs-dark',
+                    scrollbar: {
+                        vertical: 'visible',
+                        horizontal: 'visible'
+                    }
+                });
+                
+                // Load problem if URL has parameters
+                loadProblemFromURL();
+            });
+        }
+
+        // Load problem from API based on URL parameters
+        async function loadProblemFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const problemId = urlParams.get('problem');
+            const category = urlParams.get('category');
+            
+            if (!problemId) {
+                showError('No problem specified in URL');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/problems/${problemId}`);
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to load problem');
+                }
+                
+                currentProblem = result.data;
+                displayProblem(currentProblem);
+            } catch (error) {
+                console.error('Error loading problem:', error);
+                showError(`Failed to load problem: ${error.message}`);
+            }
+        }
+
+        // Display problem information
+        function displayProblem(problem) {
+            document.getElementById('problemTitle').textContent = problem.title;
+            document.getElementById('problemCategory').textContent = problem.category;
+            document.getElementById('problemDescription').textContent = problem.description;
+            
+            // Display examples
+            const examplesContainer = document.getElementById('examplesContainer');
+            examplesContainer.innerHTML = '';
+            
+            problem.examples.forEach((example, index) => {
+                const exampleDiv = document.createElement('div');
+                exampleDiv.className = 'example';
+                exampleDiv.innerHTML = `
+                    <div class="example-title">Example ${index + 1}:</div>
+                    <div class="example-content"><strong>Input:</strong> ${example.input}
+<strong>Output:</strong> ${example.output}
+<strong>Explanation:</strong> ${example.explanation}</div>
+                `;
+                examplesContainer.appendChild(exampleDiv);
+            });
+            
+            // Display constraints
+            const constraintsList = document.getElementById('constraintsList');
+            constraintsList.innerHTML = '';
+            
+            problem.constraints.forEach(constraint => {
+                const li = document.createElement('li');
+                li.textContent = constraint;
+                constraintsList.appendChild(li);
+            });
+            
+            // Display test cases
+            const testCasesList = document.getElementById('testCasesList');
+            testCasesList.innerHTML = '';
+            
+            problem.testCases.forEach((testCase, index) => {
+                const testCaseDiv = document.createElement('div');
+                testCaseDiv.className = 'test-case';
+                testCaseDiv.innerHTML = `
+                    <div class="test-case-title">Test Case ${index + 1}:</div>
+                    <div class="test-case-content">
+                        <strong>Input:</strong> ${testCase.input}
+                        <strong>Expected:</strong> ${testCase.expected}
+                    </div>
+                `;
+                testCasesList.appendChild(testCaseDiv);
+            });
+            
+            // Update editor with starter code
+            if (editor && problem.starterCode) {
+                const starterCode = problem.starterCode[currentLanguage] || problem.starterCode.python;
+                editor.setValue(starterCode);
+                monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+            }
+        }
+
+        // Change programming language
+        function changeLanguage() {
+            const languageSelector = document.getElementById('languageSelector');
+            currentLanguage = languageSelector.value;
+            
+            if (editor && currentProblem && currentProblem.starterCode) {
+                const newCode = currentProblem.starterCode[currentLanguage];
+                if (newCode) {
+                    editor.setValue(newCode);
+                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                }
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            const leftPanel = document.querySelector('.left-panel');
+            leftPanel.innerHTML = '';
+            leftPanel.appendChild(errorDiv);
+        }
+
+        // Run code function
+        function runCode() {
+            if (!editor) return;
+            
+            const code = editor.getValue();
+            const output = document.getElementById('codeOutput');
+            
+            // For now, just show the code (in a real app, this would execute the code)
+            output.textContent = `# Code executed:\n${code}\n\n# Note: This is a demo. In a real application, your code would be executed and results would be shown here.`;
+        }
+
+        // Clear output function
+        function clearOutput() {
+            document.getElementById('codeOutput').textContent = '# Output cleared';
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMonacoEditor();
+        });
+    </script>
+</body>
+</html>

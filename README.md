@@ -17,14 +17,27 @@ Prep.AI is a comprehensive interview preparation platform that uses AI to conduc
 ### Project Structure
 ```
 Prep.AI/
-├── index.js              # Main Express server and API endpoints
-├── index.html            # Frontend interface
-├── public/
-│   └── script.js         # Frontend JavaScript logic
-├── uploads/              # Temporary file storage
-├── googenv.json          # Google Cloud credentials
-├── package.json          # Dependencies and scripts
-└── tickets.MD            # Development roadmap and tasks
+├── index.js                    # Main server entry point
+├── src/
+│   ├── server/                 # Backend server code
+│   │   ├── index.js            # Express server and API endpoints
+│   │   ├── routes/             # API route handlers (planned)
+│   │   ├── middleware/         # Custom middleware (planned)
+│   │   ├── services/           # Business logic services (planned)
+│   │   └── utils/              # Utility functions (planned)
+│   ├── public/                 # Frontend assets
+│   │   ├── index.html          # Home page with test selection
+│   │   ├── test-page.html      # Testing interface
+│   │   ├── js/                 # JavaScript files
+│   │   │   └── script.js       # Frontend logic
+│   │   ├── css/                # Stylesheets (planned)
+│   │   └── assets/             # Images, icons, etc. (planned)
+│   └── config/                 # Configuration files
+│       └── config.js           # Environment and app configuration
+├── uploads/                    # Temporary file storage
+├── googenv.json                # Google Cloud credentials
+├── package.json                # Dependencies and scripts
+└── tickets.MD                  # Development roadmap and tasks
 ```
 
 ## 🚀 Core Features
@@ -104,6 +117,8 @@ npm install
 Create a `.env` file in the root directory:
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
+SESSION_SECRET=your_session_secret_here
+PORT=3000
 ```
 
 ### 3. Google Cloud Setup
@@ -126,6 +141,8 @@ Server runs on `http://localhost:3000`
 - ✅ Audio transcription
 - ✅ AI question generation
 - ✅ File cleanup system
+- ✅ New src folder structure
+- ✅ Home page with test selection
 
 ### Planned Features (from tickets.MD)
 - 🔄 Response streaming for faster AI responses
@@ -136,7 +153,7 @@ Server runs on `http://localhost:3000`
 - ⚡ React/Next.js migration
 
 ### Development Guidelines
-1. **File Organization**: Keep related functionality together
+1. **File Organization**: Keep related functionality together in src folders
 2. **Error Handling**: Implement comprehensive error handling for all endpoints
 3. **File Cleanup**: Always clean up uploaded files after processing
 4. **API Consistency**: Maintain consistent JSON response format
@@ -145,7 +162,8 @@ Server runs on `http://localhost:3000`
 ## 🧪 Testing
 
 ### Manual Testing
-- Use the web interface at `http://localhost:3000`
+- Use the home page at `http://localhost:3000`
+- Navigate to testing interface at `http://localhost:3000/test`
 - Test PDF upload with sample resumes
 - Test audio recording and transcription
 - Verify file cleanup functionality

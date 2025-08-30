@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Algorithm Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            50: '#fdf4ff',
+                            100: '#fae8ff',
+                            200: '#f5d0fe',
+                            300: '#f0abfc',
+                            400: '#e879f9',
+                            500: '#d946ef',
+                            600: '#c026d3',
+                            700: '#a21caf',
+                            800: '#86198f',
+                            900: '#701a75',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-gentle': 'pulseGentle 2s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        pulseGentle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .algorithm-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+        }
+        
+        .algorithm-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .difficulty-easy { color: #059669; }
+        .difficulty-medium { color: #d97706; }
+        .difficulty-hard { color: #dc2626; }
+        
+        .loading {
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">Prep.AI</h1>
+                        <p class="text-sm text-gray-600">Algorithm Practice</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors">
+                        ← Back to Home
+                    </a>
+                    <div class="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-green-700 font-medium">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Master Algorithm
+                <span class="gradient-text">Problem Solving</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Practice with carefully curated algorithm problems across different categories. 
+                Build your problem-solving skills with real interview questions.
+            </p>
+        </div>
+
+        <!-- Algorithm Categories -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <!-- Two Pointers -->
+            <div class="algorithm-card rounded-xl p-6 card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Two Pointers</h3>
+                        <p class="text-sm text-gray-600">Array & String Problems</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Master the two-pointer technique for solving array and string problems efficiently.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-easy">Easy</span>
+                        <span class="text-gray-500 loading" id="two-pointers-easy">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-medium">Medium</span>
+                        <span class="text-gray-500 loading" id="two-pointers-medium">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-hard">Hard</span>
+                        <span class="text-gray-500 loading" id="two-pointers-hard">Loading...</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 loading" id="two-pointers-total">Loading total...</span>
+                    <a href="/practice/two-pointers" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Start →</a>
+                </div>
+            </div>
+
+            <!-- Stack -->
+            <div class="algorithm-card rounded-xl p-6 card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Stack</h3>
+                        <p class="text-sm text-gray-600">LIFO Data Structure</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Practice stack-based problems including parentheses matching, expression evaluation, and more.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-easy">Easy</span>
+                        <span class="text-gray-500 loading" id="stack-easy">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-medium">Medium</span>
+                        <span class="text-gray-500 loading" id="stack-medium">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-hard">Hard</span>
+                        <span class="text-gray-500 loading" id="stack-hard">Loading...</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 loading" id="stack-total">Loading total...</span>
+                    <a href="/practice/stack" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Start →</a>
+                </div>
+            </div>
+
+            <!-- Sliding Window -->
+            <div class="algorithm-card rounded-xl p-6 card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Sliding Window</h3>
+                        <p class="text-sm text-gray-600">Subarray Problems</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Learn the sliding window technique for solving subarray and substring problems.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-easy">Easy</span>
+                        <span class="text-gray-500 loading" id="sliding-window-easy">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-medium">Medium</span>
+                        <span class="text-gray-500 loading" id="sliding-window-medium">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-hard">Hard</span>
+                        <span class="text-gray-500 loading" id="sliding-window-hard">Loading...</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 loading" id="sliding-window-total">Loading total...</span>
+                    <a href="/practice/sliding-window" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Start →</a>
+                </div>
+            </div>
+
+            <!-- Binary Search -->
+            <div class="algorithm-card rounded-xl p-6 card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Binary Search</h3>
+                        <p class="text-sm text-gray-600">Search & Optimization</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Master binary search for finding elements in sorted arrays and optimization problems.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-easy">Easy</span>
+                        <span class="text-gray-500 loading" id="binary-search-easy">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-medium">Medium</span>
+                        <span class="text-gray-500 loading" id="binary-search-medium">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-hard">Hard</span>
+                        <span class="text-gray-500 loading" id="binary-search-hard">Loading...</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 loading" id="binary-search-total">Loading total...</span>
+                    <a href="/practice/binary-search" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Start →</a>
+                </div>
+            </div>
+
+            <!-- Hashing -->
+            <div class="algorithm-card rounded-xl p-6 card-hover">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Hashing</h3>
+                        <p class="text-sm text-gray-600">Hash Tables & Sets</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Practice hash table problems for efficient lookups, duplicates, and frequency counting.</p>
+                <div class="space-y-2 mb-4">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-easy">Easy</span>
+                        <span class="text-gray-500 loading" id="hashing-easy">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-medium">Medium</span>
+                        <span class="text-gray-500 loading" id="hashing-medium">Loading...</span>
+                    </div>
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="difficulty-hard">Hard</span>
+                        <span class="text-gray-500 loading" id="hashing-hard">Loading...</span>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-gray-500 loading" id="hashing-total">Loading total...</span>
+                    <a href="/practice/hashing" class="text-blue-600 hover:text-blue-700 font-medium text-sm">Start →</a>
+                </div>
+            </div>
+
+            <!-- Quick Practice -->
+            <div class="algorithm-card rounded-xl p-6 card-hover bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center mr-4">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Quick Practice</h3>
+                        <p class="text-sm text-indigo-600">Random Problems</p>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Jump into random algorithm problems from any category. Perfect for quick practice sessions.</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm text-indigo-600">All categories</span>
+                    <a href="/practice/random" class="bg-indigo-500 hover:bg-indigo-600 text-white px-3 py-1 rounded-lg text-sm font-medium transition-colors">Start Random</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Progress Section -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Your Progress</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-blue-600">0</span>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Problems Solved</h4>
+                    <p class="text-gray-600">Start practicing to see your progress</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-green-600">0%</span>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Success Rate</h4>
+                    <p class="text-gray-600">Track your accuracy</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-purple-600">0</span>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Streak Days</h4>
+                    <p class="text-gray-600">Daily practice streak</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-orange-600">0</span>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-2">Total Time</h4>
+                    <p class="text-gray-600">Time spent practicing</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">💡 Pro Tips</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Start with Easy Problems</h4>
+                            <p class="text-sm text-gray-600">Build confidence with simpler problems before tackling harder ones.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Practice Daily</h4>
+                            <p class="text-sm text-gray-600">Consistent practice is key to improving your problem-solving skills.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Understand Patterns</h4>
+                            <p class="text-sm text-gray-600">Focus on recognizing common algorithm patterns and techniques.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Review Solutions</h4>
+                            <p class="text-sm text-gray-600">After solving, review optimal solutions to learn better approaches.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold">Prep.AI</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Master algorithms and data structures with AI-powered practice and feedback.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Practice</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/practice/two-pointers" class="hover:text-white transition-colors">Two Pointers</a></li>
+                        <li><a href="/practice/stack" class="hover:text-white transition-colors">Stack</a></li>
+                        <li><a href="/practice/sliding-window" class="hover:text-white transition-colors">Sliding Window</a></li>
+                        <li><a href="/practice/binary-search" class="hover:text-white transition-colors">Binary Search</a></li>
+                        <li><a href="/practice/hashing" class="hover:text-white transition-colors">Hashing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="/sandbox" class="hover:text-white transition-colors">Code Sandbox</a></li>
+                        <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Tutorials</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Prep.AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Add smooth scrolling and animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load problem counts
+            loadProblemCounts();
+            
+            // Add fade-in animation to cards
+            const cards = document.querySelectorAll('.algorithm-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('animate-fade-in');
+            });
+        });
+
+        // Function to calculate difficulty counts for a category
+        function calculateDifficultyCounts(problems, category) {
+            const categoryProblems = problems.filter(p => p.category === category);
+            const easy = categoryProblems.filter(p => p.difficulty === 'Easy').length;
+            const medium = categoryProblems.filter(p => p.difficulty === 'Medium').length;
+            const hard = categoryProblems.filter(p => p.difficulty === 'Hard').length;
+            const total = easy + medium + hard;
+            
+            return { easy, medium, hard, total };
+        }
+
+        // Function to update the UI with real counts
+        function updateCategoryCounts(category, counts) {
+            document.getElementById(`${category}-easy`).textContent = `${counts.easy} questions`;
+            document.getElementById(`${category}-medium`).textContent = `${counts.medium} questions`;
+            document.getElementById(`${category}-hard`).textContent = `${counts.hard} questions`;
+            document.getElementById(`${category}-total`).textContent = `${counts.total} total questions`;
+            
+            // Remove loading class
+            document.getElementById(`${category}-easy`).classList.remove('loading');
+            document.getElementById(`${category}-medium`).classList.remove('loading');
+            document.getElementById(`${category}-hard`).classList.remove('loading');
+            document.getElementById(`${category}-total`).classList.remove('loading');
+        }
+
+        // Load problems and update counts
+        async function loadProblemCounts() {
+            try {
+                const response = await fetch('/api/problems');
+                const result = await response.json();
+                
+                if (result.success) {
+                    const problems = Object.values(result.data);
+                    
+                    // Update counts for each category using the actual database category names
+                    const categoryMappings = {
+                        'two-pointers': 'Two Pointers',
+                        'stack': 'Stack',
+                        'sliding-window': 'Sliding Window',
+                        'binary-search': 'Binary Search'
+                    };
+                    
+                    Object.entries(categoryMappings).forEach(([elementId, dbCategory]) => {
+                        const counts = calculateDifficultyCounts(problems, dbCategory);
+                        updateCategoryCounts(elementId, counts);
+                    });
+                }
+            } catch (error) {
+                console.error('Error loading problem counts:', error);
+            }
+        }
+    </script>
+</body>
+</html>

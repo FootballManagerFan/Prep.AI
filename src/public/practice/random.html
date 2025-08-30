@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Random Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">Prep.AI</h1>
+                        <p class="text-sm text-gray-600">Random Practice</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/algorithms" class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors">
+                        ← Back to Algorithms
+                    </a>
+                    <a href="/" class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors">
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Random
+                <span class="gradient-text">Practice</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Challenge yourself with random problems from all algorithm categories.
+            </p>
+        </div>
+
+        <!-- Random Problem Generator -->
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">Ready for a Challenge?</h3>
+                <p class="text-gray-600">Click the button below to get a random problem from any category.</p>
+            </div>
+
+            <div class="space-y-6">
+                <button onclick="generateRandomProblem()" class="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-xl text-xl font-semibold transition-colors transform hover:scale-105">
+                    🎲 Generate Random Problem
+                </button>
+
+                <div id="problemDisplay" class="hidden">
+                    <div class="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2" id="problemTitle">Problem Title</h4>
+                        <p class="text-gray-600 mb-4" id="problemDescription">Problem description will appear here.</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500" id="problemCategory">Category</span>
+                            <span class="text-sm font-medium" id="problemDifficulty">Difficulty</span>
+                        </div>
+                        <button onclick="startRandomProblem()" class="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                            Start This Problem
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="mt-12 text-center">
+            <p class="text-gray-600 mb-4">Or choose a specific category:</p>
+            <div class="flex flex-wrap justify-center gap-3">
+                <a href="/practice/two-pointers" class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg transition-colors">
+                    Two Pointers
+                </a>
+                <a href="/practice/stack" class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded-lg transition-colors">
+                    Stack
+                </a>
+                <a href="/practice/sliding-window" class="bg-green-100 hover:bg-green-200 text-green-700 px-4 py-2 rounded-lg transition-colors">
+                    Sliding Window
+                </a>
+                <a href="/practice/binary-search" class="bg-orange-100 hover:bg-orange-200 text-orange-700 px-4 py-2 rounded-lg transition-colors">
+                    Binary Search
+                </a>
+                <a href="/practice/hashing" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-lg transition-colors">
+                    Hashing
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const problems = [
+            {
+                title: "Two Sum",
+                description: "Find two numbers in an array that add up to a target value.",
+                category: "Two Pointers",
+                difficulty: "Easy",
+                id: "two-sum"
+            },
+            {
+                title: "Valid Palindrome",
+                description: "Check if a string is a palindrome using two pointers.",
+                category: "Two Pointers",
+                difficulty: "Easy",
+                id: "palindrome"
+            },
+            {
+                title: "Valid Parentheses",
+                description: "Check if a string of parentheses is valid using a stack.",
+                category: "Stack",
+                difficulty: "Easy",
+                id: "valid-parentheses"
+            },
+            {
+                title: "Maximum Subarray",
+                description: "Find the maximum sum of a contiguous subarray.",
+                category: "Sliding Window",
+                difficulty: "Medium",
+                id: "max-subarray"
+            },
+            {
+                title: "Binary Search",
+                description: "Find a target element in a sorted array.",
+                category: "Binary Search",
+                difficulty: "Easy",
+                id: "binary-search"
+            },
+            {
+                title: "Contains Duplicate",
+                description: "Check if an array contains any duplicates using a hash set.",
+                category: "Hashing",
+                difficulty: "Easy",
+                id: "contains-duplicate"
+            }
+        ];
+
+        function generateRandomProblem() {
+            const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+            
+            document.getElementById('problemTitle').textContent = randomProblem.title;
+            document.getElementById('problemDescription').textContent = randomProblem.description;
+            document.getElementById('problemCategory').textContent = randomProblem.category;
+            document.getElementById('problemDifficulty').textContent = randomProblem.difficulty;
+            
+            document.getElementById('problemDisplay').classList.remove('hidden');
+        }
+
+        function startRandomProblem() {
+            // For now, redirect to the test page
+            window.location.href = `/test?category=random`;
+        }
+    </script>
+</body>
+</html>

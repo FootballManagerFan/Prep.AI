@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Binary Search Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .problem-card {
+            transition: all 0.3s ease;
+        }
+        
+        .problem-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .difficulty-easy { color: #059669; }
+        .difficulty-medium { color: #d97706; }
+        .difficulty-hard { color: #dc2626; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">Binary Search</h1>
+                        <p class="text-sm text-gray-600">Search & Optimization Problems</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/algorithms" class="text-orange-600 hover:text-orange-700 text-sm font-medium px-3 py-1 rounded hover:bg-orange-50 transition-colors">
+                        ← Back to Algorithms
+                    </a>
+                    <a href="/" class="text-gray-600 hover:text-gray-700 text-sm font-medium px-3 py-1 rounded hover:bg-gray-50 transition-colors">
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Master
+                <span class="gradient-text">Binary Search</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                Practice binary search problems to efficiently find elements in sorted arrays and solve optimization challenges. 
+                Perfect for technical interviews and competitive programming.
+            </p>
+        </div>
+
+        <!-- Problem Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Binary Search -->
+            <div class="problem-card bg-white rounded-xl p-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Binary Search</h3>
+                    <span class="difficulty-easy text-sm font-medium px-2 py-1 bg-green-100 rounded-full">Easy</span>
+                </div>
+                <p class="text-gray-600 mb-4 text-sm">Find target element in sorted array using binary search algorithm.</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Array • Binary Search</span>
+                    <a href="/test?problem=binary-search&category=binary-search" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start →</a>
+                </div>
+            </div>
+
+            <!-- Search Insert Position -->
+            <div class="problem-card bg-white rounded-xl p-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Search Insert Position</h3>
+                    <span class="difficulty-easy text-sm font-medium px-2 py-1 bg-green-100 rounded-full">Easy</span>
+                </div>
+                <p class="text-gray-600 mb-4 text-sm">Find insertion position for target in sorted array.</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Array • Binary Search</span>
+                    <a href="/test?problem=search-insert-position&category=binary-search" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start →</a>
+                </div>
+            </div>
+
+            <!-- Sqrt(x) -->
+            <div class="problem-card bg-white rounded-xl p-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Sqrt(x)</h3>
+                    <span class="difficulty-easy text-sm font-medium px-2 py-1 bg-green-100 rounded-full">Easy</span>
+                </div>
+                <p class="text-gray-600 mb-4 text-sm">Calculate square root of integer using binary search.</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Math • Binary Search</span>
+                    <a href="/test?problem=sqrt&category=binary-search" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start →</a>
+                </div>
+            </div>
+
+            <!-- Search in Rotated Sorted Array -->
+            <div class="problem-card bg-white rounded-xl p-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Search in Rotated Sorted Array</h3>
+                    <span class="difficulty-medium text-sm font-medium px-2 py-1 bg-yellow-100 rounded-full">Medium</span>
+                </div>
+                <p class="text-gray-600 mb-4 text-sm">Find target in rotated sorted array using binary search.</p>
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-gray-500">Array • Binary Search</span>
+                    <a href="/test?problem=search-rotated-array&category=binary-search" class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Start →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tips Section -->
+        <div class="mt-16 bg-gradient-to-r from-orange-50 to-red-50 rounded-2xl p-8 border border-orange-200">
+            <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">🔍 Binary Search Tips</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">1</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Always Check Edge Cases</h4>
+                            <p class="text-sm text-gray-600">Empty arrays, single elements, and boundary conditions.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">2</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Handle Duplicates</h4>
+                            <p class="text-sm text-gray-600">Decide whether to return first or last occurrence.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">3</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Avoid Integer Overflow</h4>
+                            <p class="text-sm text-gray-600">Use (left + right) / 2 or left + (right - left) / 2.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-3">
+                        <div class="w-6 h-6 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                            <span class="text-white text-xs font-bold">4</span>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900">Loop Termination</h4>
+                            <p class="text-sm text-gray-600">Ensure loop always terminates with left <= right.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <div class="w-8 h-8 bg-gradient-to-r from-orange-500 to-red-600 rounded flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold">Binary Search Practice</span>
+                </div>
+                <p class="text-gray-400 mb-4">Master binary search algorithms with Prep.AI</p>
+                <div class="flex justify-center space-x-6">
+                    <a href="/algorithms" class="text-gray-400 hover:text-white transition-colors">All Algorithms</a>
+                    <a href="/" class="text-gray-400 hover:text-white transition-colors">Home</a>
+                    <a href="/sandbox" class="text-gray-400 hover:text-white transition-colors">Code Sandbox</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

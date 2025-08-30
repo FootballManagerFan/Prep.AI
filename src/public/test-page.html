@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Practice Problem</title>
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.5rem 1rem; /* slimmer header */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .problem-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .problem-category {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .run-button {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .run-button:hover {
+            background: #059669;
+        }
+        
+        .clear-button {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 0.875rem;
+        }
+        
+        .clear-button:hover {
+            background: #4b5563;
+        }
+        
+        .back-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+        
+        .back-link:hover {
+            background: #f3f4f6;
+        }
+        
+        .main-container {
+            display: flex;
+            height: calc(100vh - 56px);
+            min-height: 0;
+        }
+
+        .left-panel {
+            flex: 1;
+            background: white;
+            /* removed divider between explanation and IDE */
+            overflow-y: auto;
+            padding: 1.25rem;
+        }
+        
+        .right-panel {
+            flex: 1;
+            background: #1e1e1e;
+            display: flex;
+            flex-direction: column; /* editor on top, console bottom */
+            min-width: 380px;
+            height: 100%;
+            min-height: 0;
+        }
+        
+        .problem-description {
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        
+        .examples-section {
+            margin-bottom: 2rem;
+        }
+        
+        /* Removed examples-title style since AI interviewer now provides context */
+        
+        .example {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .example-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .example-content {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            white-space: pre-line;
+        }
+        
+        .constraints-section {
+            margin-bottom: 2rem;
+        }
+        
+        /* Removed constraints-title style since AI interviewer now provides context */
+        
+        .constraints-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .constraints-list li {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .test-cases-section {
+            margin-bottom: 2rem;
+        }
+        
+        /* Removed test-cases-title style since AI interviewer now provides context */
+        
+        .test-case {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .test-case-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .test-case-content {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .editor-container {
+            flex: 0 0 auto; /* we will control size via flex-basis */
+            flex-basis: 60%;
+            position: relative;
+            min-height: 220px;
+            min-width: 0;
+        }
+        
+        .editor-header {
+            background: #2d2d30;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #3e3e42;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .language-selector {
+            background: #3c3c3c;
+            color: white;
+            border: 1px solid #5a5a5a;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .output-panel {
+            flex: 0 0 auto; /* controlled via flex-basis */
+            flex-basis: 40%;
+            background: #111214;
+            border-top: 1px solid #3e3e42; /* horizontal separator */
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 140px;
+            min-width: 0;
+        }
+
+        .terminal-header {
+            background: #17181b;
+            color: #9ca3af;
+            padding: 8px 12px;
+            border-bottom: 1px solid #3e3e42;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .terminal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+        }
+
+        /* Split dividers */
+        .split-divider { width: 10px; flex: 0 0 10px; height: 100%; background: #cbd5e1; cursor: col-resize; position: relative; z-index: 50; user-select: none; }
+        .split-divider:hover { background: #60a5fa; }
+        .row-divider { height: 10px; flex: 0 0 10px; width: 100%; background: #4b5563; cursor: row-resize; position: relative; z-index: 50; user-select: none; }
+        .row-divider:hover { background: #60a5fa; }
+        .split-divider::after { content: ""; position: absolute; left: 3px; top: 0; bottom: 0; width: 4px; background: rgba(0,0,0,0.08); border-radius: 2px; }
+        .row-divider::after { content: ""; position: absolute; top: 3px; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.12); border-radius: 2px; }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+        
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        
+        /* Simple chat styles */
+        .chat-container { border: 1px solid #e5e7eb; border-radius: 8px; background: #fff; margin-top: 16px; }
+        .chat-header { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 8px; }
+        .chat-header .dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; }
+        .chat-messages { padding: 12px; max-height: 250px; overflow-y: auto; background: #fafafa; }
+        .chat-row { display: flex; margin-bottom: 10px; align-items: flex-start; }
+        .chat-row.ai { justify-content: flex-start; }
+        .chat-row.user { justify-content: flex-end; }
+        .bubble { padding: 10px 12px; border-radius: 14px; font-size: 14px; line-height: 1.4; max-width: 80%; }
+        .bubble.ai { background: #eef2ff; color: #1f2937; border: 1px solid #e5e7eb; }
+        .bubble.user { background: #e0f2fe; color: #0c4a6e; border: 1px solid #bae6fd; }
+        .chat-input { border-top: 1px solid #e5e7eb; padding: 10px; }
+        .chat-input .input-row { display: flex; gap: 8px; align-items: flex-end; }
+        .chat-input textarea { flex: 1; resize: vertical; min-height: 64px; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; font-family: inherit; font-size: 14px; }
+        .input-tools { display: flex; gap: 8px; }
+        .icon-btn { width: 36px; height: 36px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { background: #f8fafc; }
+        .chat-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+        .chat-meta { color: #6b7280; font-size: 12px; }
+        .chat-input button { background: #3b82f6; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
+        .chat-input button:disabled { opacity: 0.6; cursor: not-allowed; }
+        
+        /* Enhanced example and test case styles */
+        .example, .test-case {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .example-title, .test-case-title {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+        }
+        
+        .example-content, .test-case-content {
+            color: #6b7280;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+        
+        .example-input, .example-output, .example-explanation,
+        .test-case-input, .test-case-expected {
+            margin-bottom: 0.5rem;
+        }
+        
+        .example-input:last-child, .example-output:last-child, .example-explanation:last-child,
+        .test-case-input:last-child, .test-case-expected:last-child {
+            margin-bottom: 0;
+        }
+        
+        code {
+            background: #f1f5f9;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', monospace;
+            color: #1e293b;
+        }
+    </style>
+  </head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <a href="/" class="back-link">← Back to Home</a>
+                    <div>
+                <div class="problem-title" id="problemTitle">Loading Problem...</div>
+                <div class="problem-category" id="problemCategory">Loading...</div>
+                        </div>
+                    </div>
+                    
+        <div class="header-actions">
+            <button class="run-button" onclick="runCode()">Run Code</button>
+            <button class="clear-button" onclick="clearOutput()">Clear Output</button>
+                        </div>
+                    </div>
+                    
+    <div class="main-container">
+        <div class="left-panel" id="leftPane">
+            <div class="problem-description" id="problemDescription"></div>
+            
+            <!-- AI chatbox moved to bottom; placeholder removed here -->
+            
+            <div class="examples-section">
+                <div id="examplesContainer">
+                    <div class="loading">Loading examples...</div>
+                             </div>
+                         </div>
+                         
+            <div class="constraints-section">
+                <div id="constraintsList">
+                    <div class="loading">Loading constraints...</div>
+                </div>
+            </div>
+
+            <div class="test-cases-section">
+                <div id="testCasesList">
+                    <div class="loading">Loading test cases...</div>
+                </div>
+            </div>
+            <!-- Simple AI Chat (bottom) -->
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-header"><span class="dot"></span> AI Interviewer</div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="chat-row ai">
+                        <div class="bubble ai">Hi! I’ll ask questions and give hints as you work. When you have an approach, tell me and I’ll nudge you.</div>
+                         </div>
+                     </div>
+                <div class="chat-input">
+                    <div class="input-row">
+                        <textarea id="chatInput" placeholder="Share your approach or ask for a hint..." rows="3"></textarea>
+                        <div class="input-tools">
+                            <button class="icon-btn" id="micBtn" title="Record audio">🎤</button>
+                            <button class="icon-btn" id="attachBtn" title="Attach resume">📎</button>
+                          </div>
+                      </div>
+                    <div class="chat-actions">
+                        <div class="chat-meta"><span id="charCount">0</span>/500</div>
+                        <button id="chatSendBtn" type="button">Send</button>
+                      </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="split-divider" id="mainDivider" title="Drag to resize"></div>
+
+        <div class="right-panel" id="rightPane">
+            <div class="editor-header">
+                <span style="color: white; font-weight: 500;">Code Editor</span>
+                <select id="languageSelector" class="language-selector" onchange="changeLanguage()">
+                    <option value="python">Python</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="java">Java</option>
+                    <option value="cpp">C++</option>
+                </select>
+                 </div>
+                 
+            <div class="editor-container" id="editorPane">
+                <div id="editorContainer" style="height: 100%;"></div>
+                </div>
+                
+            <div class="row-divider" id="rightDivider" title="Drag to resize"></div>
+
+            <div class="output-panel">
+                <div class="terminal-header">Console</div>
+                <div class="terminal-body" id="codeOutput"># Output will appear here when you run your code</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let editor;
+        let currentProblem = null;
+        let currentLanguage = 'python';
+
+        // Initialize Monaco Editor
+        function initializeMonacoEditor() {
+            if (typeof require === 'undefined') {
+                console.error('Monaco Editor loader not found');
+                return;
+            }
+            
+            require.config({ paths: { vs: 'https://unpkg.com/monaco-editor@0.45.0/min/vs' } });
+            require(['vs/editor/editor.main'], function() {
+                editor = monaco.editor.create(document.getElementById('editorContainer'), {
+                    value: '# Welcome to Python!\n# Write your solution here\n\ndef solve_problem():\n    # Your code here\n    pass\n\n# Test your solution\nif __name__ == "__main__":\n    result = solve_problem()\n    print(result)',
+                    language: 'python',
+                    automaticLayout: true,
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    lineNumbers: 'on',
+                    roundedSelection: false,
+                    scrollBeyondLastLine: false,
+                    readOnly: false,
+                    theme: 'vs-dark',
+                    scrollbar: {
+                        vertical: 'visible',
+                        horizontal: 'visible'
+                    }
+                });
+                
+                // Load problem if URL has parameters
+                loadProblemFromURL();
+            });
+        }
+
+        // Load problem from API based on URL parameters
+        async function loadProblemFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const problemId = urlParams.get('problem');
+            const category = urlParams.get('category');
+            
+            if (!problemId) {
+                showError('No problem specified in URL');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/problems/${problemId}`);
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || 'Failed to load problem');
+                }
+                
+                currentProblem = result.data;
+                displayProblem(currentProblem);
+            } catch (error) {
+                console.error('Error loading problem:', error);
+                showError(`Failed to load problem: ${error.message}`);
+            }
+        }
+
+        // Display problem information
+        function displayProblem(problem) {
+            document.getElementById('problemTitle').textContent = problem.title;
+            document.getElementById('problemCategory').textContent = problem.category;
+            
+            // Seed chat with problem-specific welcome
+            const chatMessages = document.getElementById('chatMessages');
+            if (chatMessages) {
+                const row = document.createElement('div');
+                row.className = 'chat-row ai';
+                row.innerHTML = `<div class="bubble ai">You're on a <strong>${problem.difficulty}</strong> problem in <strong>${problem.category}</strong>. Tell me your initial approach, and I’ll guide you.</div>`;
+                chatMessages.appendChild(row);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Display examples
+            const examplesContainer = document.getElementById('examplesContainer');
+            examplesContainer.innerHTML = '';
+            
+            problem.examples.forEach((example, index) => {
+                const exampleDiv = document.createElement('div');
+                exampleDiv.className = 'example';
+                exampleDiv.innerHTML = `
+                    <div class="example-title">Example ${index + 1}:</div>
+                    <div class="example-content"><strong>Input:</strong> ${example.input}
+<strong>Output:</strong> ${example.output}
+<strong>Explanation:</strong> ${example.explanation}</div>
+                `;
+                examplesContainer.appendChild(exampleDiv);
+            });
+            
+            // Display constraints
+            const constraintsList = document.getElementById('constraintsList');
+            constraintsList.innerHTML = '';
+            
+            problem.constraints.forEach(constraint => {
+                const li = document.createElement('li');
+                li.textContent = constraint;
+                constraintsList.appendChild(li);
+            });
+            
+            // Display test cases
+            const testCasesList = document.getElementById('testCasesList');
+            testCasesList.innerHTML = '';
+            
+            problem.testCases.forEach((testCase, index) => {
+                const testCaseDiv = document.createElement('div');
+                testCaseDiv.className = 'test-case';
+                testCaseDiv.innerHTML = `
+                    <div class="test-case-title">Test Case ${index + 1}:</div>
+                    <div class="test-case-content">
+                        <strong>Input:</strong> ${testCase.input}
+                        <strong>Expected:</strong> ${testCase.expected}
+                    </div>
+                `;
+                testCasesList.appendChild(testCaseDiv);
+            });
+            
+            // Update editor with starter code and AI guidance
+            if (editor && problem.starterCode) {
+                const starterCode = problem.starterCode[currentLanguage] || problem.starterCode.python;
+                editor.setValue(starterCode);
+                monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                
+                // Simple starter code setup
+            }
+        }
+
+        // Change programming language
+        function changeLanguage() {
+            const languageSelector = document.getElementById('languageSelector');
+            currentLanguage = languageSelector.value;
+            
+            if (editor && currentProblem && currentProblem.starterCode) {
+                const newCode = currentProblem.starterCode[currentLanguage];
+                if (newCode) {
+                    editor.setValue(newCode);
+                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                }
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            const leftPanel = document.querySelector('.left-panel');
+            leftPanel.innerHTML = '';
+            leftPanel.appendChild(errorDiv);
+        }
+
+        // Run code function
+        function runCode() {
+            if (!editor) return;
+            
+            const code = editor.getValue();
+            const output = document.getElementById('codeOutput');
+            
+            // For now, just show the code (in a real app, this would execute the code)
+            output.textContent = `# Code executed:\n${code}\n\n# Note: This is a demo. In a real application, your code would be executed and results would be shown here.`;
+        }
+
+        // Clear output function
+        function clearOutput() {
+            document.getElementById('codeOutput').textContent = '# Output cleared';
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMonacoEditor();
+            // Chat handlers
+            const input = document.getElementById('chatInput');
+            const sendBtn = document.getElementById('chatSendBtn');
+            const messages = document.getElementById('chatMessages');
+            const charCount = document.getElementById('charCount');
+            
+            function addMessage(text, who) {
+                const row = document.createElement('div');
+                row.className = `chat-row ${who}`;
+                const bubble = document.createElement('div');
+                bubble.className = `bubble ${who}`;
+                bubble.textContent = text;
+                row.appendChild(bubble);
+                messages.appendChild(row);
+                messages.scrollTop = messages.scrollHeight;
+            }
+            
+            async function sendMessage() {
+                const text = (input.value || '').trim();
+                if (!text) return;
+                if (text.length > 500) return;
+                addMessage(text, 'user');
+                input.value = '';
+                charCount.textContent = '0';
+                sendBtn.disabled = true;
+                try {
+                    const res = await fetch('/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: text })
+                    });
+                    const data = await res.json();
+                    if (res.ok && data.reply) {
+                        addMessage(data.reply, 'ai');
+                    } else {
+                        addMessage('Sorry, there was an error. Please try again.', 'ai');
+                    }
+                } catch (e) {
+                    addMessage('Network error. Please try again.', 'ai');
+                } finally {
+                    sendBtn.disabled = false;
+                }
+            }
+            
+            if (input && sendBtn) {
+                input.addEventListener('input', () => {
+                    const len = input.value.length;
+                    charCount.textContent = String(Math.min(len, 500));
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+                sendBtn.addEventListener('click', sendMessage);
+            }
+
+            // Horizontal main divider (between explanation and IDE)
+            const mainDivider = document.getElementById('mainDivider');
+            const leftPane = document.getElementById('leftPane');
+            const rightPane = document.getElementById('rightPane');
+            if (mainDivider && leftPane && rightPane) {
+                // initial sizes
+                leftPane.style.flexBasis = '50%';
+                rightPane.style.flexBasis = '50%';
+                let startX = 0, startLeft = 0, total = 0, active = false;
+                mainDivider.addEventListener('mousedown', (e) => {
+                    active = true;
+                    startX = e.clientX;
+                    startLeft = leftPane.offsetWidth;
+                    total = leftPane.parentElement.offsetWidth;
+                    document.body.style.userSelect = 'none';
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (!active) return;
+                    const delta = e.clientX - startX;
+                    const newLeft = Math.max(320, Math.min(total - 360, startLeft + delta));
+                    leftPane.style.flexBasis = (newLeft / total * 100) + '%';
+                    rightPane.style.flexBasis = (100 - (newLeft / total * 100)) + '%';
+                    if (window.monaco && editor) { editor.layout(); }
+                });
+                window.addEventListener('mouseup', () => {
+                    active = false;
+                    document.body.style.userSelect = '';
+                });
+            }
+
+            // Vertical divider inside right pane (editor vs console)
+            const rightDivider = document.getElementById('rightDivider');
+            const editorPane = document.getElementById('editorPane');
+            const outputPanel = document.querySelector('.output-panel');
+            if (rightDivider && editorPane && outputPanel) {
+                // initial basis
+                editorPane.style.flexBasis = '60%';
+                outputPanel.style.flexBasis = '40%';
+                let startY = 0, startEditorH = 0, totalH = 0, active = false;
+                rightDivider.addEventListener('mousedown', (e) => {
+                    active = true;
+                    startY = e.clientY;
+                    startEditorH = editorPane.offsetHeight;
+                    totalH = rightPane.offsetHeight;
+                    document.body.style.userSelect = 'none';
+                });
+                window.addEventListener('mousemove', (e) => {
+                    if (!active) return;
+                    const delta = e.clientY - startY;
+                    let newEditor = startEditorH + delta;
+                    newEditor = Math.max(220, Math.min(totalH - 140, newEditor));
+                    const editorPct = (newEditor / totalH) * 100;
+                    editorPane.style.flexBasis = editorPct + '%';
+                    outputPanel.style.flexBasis = (100 - editorPct) + '%';
+                    if (window.monaco && editor) { editor.layout(); }
+                });
+                window.addEventListener('mouseup', () => {
+                    active = false;
+                    document.body.style.userSelect = '';
+                });
+            }
+        });
+    </script>
+  </body>
+</html>

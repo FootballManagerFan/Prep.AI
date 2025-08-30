@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Two Pointers Practice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/monaco-editor@0.45.0/min/vs/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">Prep.AI</h1>
+                        <p class="text-sm text-gray-600">Two Pointers Practice</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <a href="/algorithms" class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors">
+                        ← Back to Algorithms
+                    </a>
+                    <a href="/" class="text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors">
+                        Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Two Pointers
+                <span class="gradient-text">Practice</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Master the two-pointer technique for solving array and string problems efficiently.
+            </p>
+        </div>
+
+        <!-- Problem Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Easy Problems -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">1</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Two Sum</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Find two numbers in an array that add up to a target value.</p>
+                <button onclick="startProblem('two-sum')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">2</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Valid Palindrome</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Check if a string is a palindrome using two pointers.</p>
+                <button onclick="startProblem('palindrome')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">3</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Remove Duplicates</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Remove duplicates from a sorted array in-place.</p>
+                <button onclick="startProblem('remove-duplicates')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200 text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Practice?</h3>
+            <p class="text-gray-600 mb-6">Jump into a random two-pointers problem to test your skills.</p>
+            <button onclick="startRandomProblem()" class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-lg text-lg font-medium transition-colors">
+                Start Random Problem
+            </button>
+        </div>
+    </main>
+
+    <script>
+        function startProblem(problemId) {
+            // For now, redirect to the test page with a specific problem
+            window.location.href = `/test?problem=${problemId}&category=two-pointers`;
+        }
+
+        function startRandomProblem() {
+            const problems = ['two-sum', 'palindrome', 'remove-duplicates'];
+            const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+            startProblem(randomProblem);
+        }
+    </script>
+</body>
+</html>
