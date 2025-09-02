@@ -114,6 +114,7 @@
         </div>
     </main>
 
+    <script src="/js/shared.js"></script>
     <script>
         const problems = [
             {
@@ -161,12 +162,12 @@
         ];
 
         function generateRandomProblem() {
-            const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+            const problem = PrepAI.generateRandomProblem(problems);
             
-            document.getElementById('problemTitle').textContent = randomProblem.title;
-            document.getElementById('problemDescription').textContent = randomProblem.description;
-            document.getElementById('problemCategory').textContent = randomProblem.category;
-            document.getElementById('problemDifficulty').textContent = randomProblem.difficulty;
+            document.getElementById('problemTitle').textContent = problem.title;
+            document.getElementById('problemDescription').textContent = problem.description;
+            document.getElementById('problemCategory').textContent = problem.category;
+            document.getElementById('problemDifficulty').textContent = problem.difficulty;
             
             document.getElementById('problemDisplay').classList.remove('hidden');
         }

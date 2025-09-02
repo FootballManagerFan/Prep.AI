@@ -78,14 +78,15 @@
                 </button>
             </div>
 
+            <!-- Medium Problems -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-green-600 font-bold text-lg">2</span>
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-yellow-600 font-bold text-lg">2</span>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Longest Substring</h3>
-                        <span class="text-sm text-green-600 font-medium">Medium</span>
+                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
                     </div>
                 </div>
                 <p class="text-gray-600 mb-4">Find the longest substring without repeating characters.</p>
@@ -96,21 +97,20 @@
 
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-green-600 font-bold text-lg">3</span>
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-yellow-600 font-bold text-lg">3</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Minimum Window</h3>
-                        <span class="text-sm text-green-600 font-medium">Hard</span>
+                        <h3 class="text-lg font-semibold text-gray-900">Permutation in String</h3>
+                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-4">Find the minimum window substring containing all characters from another string.</p>
-                <button onclick="startProblem('minimum-window')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <p class="text-gray-600 mb-4">Check if one string's permutation exists in another string.</p>
+                <button onclick="startProblem('permutation-in-string')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                     Start Problem
                 </button>
             </div>
 
-            <!-- Medium Problems -->
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
@@ -133,28 +133,29 @@
                         <span class="text-yellow-600 font-bold text-lg">5</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Permutation in String</h3>
-                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
-                    </div>
-                </div>
-                <p class="text-gray-600 mb-4">Check if one string's permutation exists in another string.</p>
-                <button onclick="startProblem('permutation-in-string')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
-                    Start Problem
-                </button>
-            </div>
-
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-yellow-600 font-bold text-lg">6</span>
-                    </div>
-                    <div>
                         <h3 class="text-lg font-semibold text-gray-900">Fruit Into Baskets</h3>
                         <span class="text-sm text-yellow-600 font-medium">Medium</span>
                     </div>
                 </div>
                 <p class="text-gray-600 mb-4">Find the maximum number of fruits you can collect using sliding window.</p>
                 <button onclick="startProblem('fruit-into-baskets')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <!-- Hard Problems -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-red-600 font-bold text-lg">6</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Minimum Window</h3>
+                        <span class="text-sm text-red-600 font-medium">Hard</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Find the minimum window substring containing all characters from another string.</p>
+                <button onclick="startProblem('minimum-window')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                     Start Problem
                 </button>
             </div>
@@ -170,15 +171,15 @@
         </div>
     </main>
 
+    <script src="/js/shared.js"></script>
     <script>
         function startProblem(problemId) {
-            // For now, redirect to the test page with a specific problem
-            window.location.href = `/test?problem=${problemId}&category=sliding-window`;
+            PrepAI.startProblem(problemId, 'sliding-window');
         }
 
         function startRandomProblem() {
             const problems = ['max-subarray', 'longest-substring', 'minimum-window', 'longest-repeating', 'permutation-in-string', 'fruit-into-baskets'];
-            const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+            const randomProblem = PrepAI.generateRandomProblem(problems);
             startProblem(randomProblem);
         }
     </script>

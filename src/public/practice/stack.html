@@ -170,15 +170,15 @@
         </div>
     </main>
 
+    <script src="/js/shared.js"></script>
     <script>
         function startProblem(problemId) {
-            // For now, redirect to the test page with a specific problem
-            window.location.href = `/test?problem=${problemId}&category=stack`;
+            PrepAI.startProblem(problemId, 'stack');
         }
 
         function startRandomProblem() {
             const problems = ['valid-parentheses', 'min-stack', 'evaluate-rpn', 'daily-temperatures', 'largest-rectangle', 'next-greater-element'];
-            const randomProblem = problems[Math.floor(Math.random() * problems.length)];
+            const randomProblem = PrepAI.generateRandomProblem(problems);
             startProblem(randomProblem);
         }
     </script>

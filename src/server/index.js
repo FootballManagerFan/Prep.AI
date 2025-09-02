@@ -461,6 +461,30 @@ app.get('/practice/random', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/practice/random.html'));
 });
 
+// API root endpoint - provides information about available endpoints
+app.get('/api', (req, res) => {
+  res.json({
+    message: 'Prep.AI API',
+    version: '1.0.0',
+    endpoints: {
+      problems: {
+        'GET /api/problems': 'Get all coding problems',
+        'GET /api/problems/:id': 'Get specific problem by ID',
+        'GET /api/search?q=term': 'Search problems by title or tags'
+      },
+      categories: {
+        'GET /api/categories': 'Get all problem categories',
+        'GET /api/categories/:name/problems': 'Get problems in specific category'
+      },
+      execution: {
+        'POST /api/execute-code': 'Execute code in sandboxed environment'
+      }
+    },
+    documentation: 'See individual endpoints for detailed response formats',
+    baseUrl: `${req.protocol}://${req.get('host')}/api`
+  });
+});
+
 // Database API endpoints
 app.get('/api/problems', (req, res) => {
   try {

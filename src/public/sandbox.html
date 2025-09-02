@@ -334,6 +334,7 @@
         </div>
     </main>
 
+    <script src="/js/shared.js"></script>
     <script>
         // Monaco Editor variables
         let editor = null;
@@ -530,7 +531,7 @@ int main() {
             }
         }
 
-        // Run code (simulated)
+        // Run code (simulated) - using shared function for basic execution
         function runCode() {
             const code = editor.getValue();
             const language = currentLanguage;
@@ -563,7 +564,7 @@ int main() {
             }
         }
 
-        // Clear output
+        // Clear output using shared function
         function clearOutput() {
             const outputPanel = document.getElementById('outputPanel');
             outputPanel.innerHTML = `

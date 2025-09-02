@@ -330,6 +330,7 @@
         </div>
     </div>
     
+    <script src="/js/shared.js"></script>
     <script>
         let editor;
         let currentProblem = null;
@@ -450,45 +451,21 @@
             }
         }
 
-        // Change programming language
+        // Use shared functions from PrepAI object
         function changeLanguage() {
-            const languageSelector = document.getElementById('languageSelector');
-            currentLanguage = languageSelector.value;
-            
-            if (editor && currentProblem && currentProblem.starterCode) {
-                const newCode = currentProblem.starterCode[currentLanguage];
-                if (newCode) {
-                    editor.setValue(newCode);
-                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
-                }
-            }
+            currentLanguage = PrepAI.changeLanguage(editor, currentProblem);
         }
 
-        // Show error message
         function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error';
-            errorDiv.textContent = message;
-            
-            const leftPanel = document.querySelector('.left-panel');
-            leftPanel.innerHTML = '';
-            leftPanel.appendChild(errorDiv);
+            PrepAI.showError(message, '.left-panel');
         }
 
-        // Run code function
         function runCode() {
-            if (!editor) return;
-            
-            const code = editor.getValue();
-            const output = document.getElementById('codeOutput');
-            
-            // For now, just show the code (in a real app, this would execute the code)
-            output.textContent = `# Code executed:\n${code}\n\n# Note: This is a demo. In a real application, your code would be executed and results would be shown here.`;
+            PrepAI.runCode(editor, 'codeOutput');
         }
 
-        // Clear output function
         function clearOutput() {
-            document.getElementById('codeOutput').textContent = '# Output cleared';
+            PrepAI.clearOutput('codeOutput');
         }
 
         // Initialize when page loads

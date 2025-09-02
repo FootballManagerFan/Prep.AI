@@ -436,8 +436,13 @@ function formatTerminalOutput(output) {
     return formattedLines.join('');
 }
 
-// Escape HTML to prevent XSS
+// Escape HTML to prevent XSS - using shared function when available
 function escapeHtml(text) {
+    if (typeof PrepAI !== 'undefined') {
+        return PrepAI.escapeHtml(text);
+    }
+    
+    // Fallback implementation if shared function not available
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;

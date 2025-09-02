@@ -1,0 +1,190 @@
+/* Shared CSS for Prep.AI - Eliminates duplicate styles across HTML files */
+
+/* Common utility classes */
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.algorithm-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+}
+
+.algorithm-card:hover {
+    border-color: #3b82f6;
+}
+
+/* Problem card styles */
+.problem-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.problem-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Difficulty colors */
+.difficulty-easy { color: #059669; }
+.difficulty-medium { color: #d97706; }
+.difficulty-hard { color: #dc2626; }
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+}
+
+/* Common button styles */
+.btn-primary {
+    @apply bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors font-medium;
+}
+
+.btn-secondary {
+    @apply bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors font-medium;
+}
+
+.btn-success {
+    @apply bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors font-medium;
+}
+
+.btn-danger {
+    @apply bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors font-medium;
+}
+
+/* Common form styles */
+.form-input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+}
+
+.form-label {
+    @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+/* Common layout classes */
+.container-main {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+}
+
+.section-spacing {
+    @apply mb-16;
+}
+
+/* Common animation classes */
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+.animate-pulse-gentle {
+    animation: pulseGentle 2s ease-in-out infinite;
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes slideUp {
+    0% { transform: translateY(10px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulseGentle {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+/* Common header styles */
+.header-common {
+    @apply bg-white shadow-sm border-b border-gray-200;
+}
+
+.header-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.header-content {
+    @apply flex justify-between items-center py-6;
+}
+
+.header-left {
+    @apply flex items-center space-x-3;
+}
+
+.header-logo {
+    @apply w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center;
+}
+
+.header-actions {
+    @apply flex items-center space-x-4;
+}
+
+/* Common navigation styles */
+.nav-link {
+    @apply text-blue-600 hover:text-blue-700 text-sm font-medium px-3 py-1 rounded hover:bg-blue-50 transition-colors;
+}
+
+.nav-link-active {
+    @apply bg-blue-100 text-blue-700;
+}
+
+/* Common card styles */
+.card-base {
+    @apply bg-white rounded-xl p-6 shadow-sm border border-gray-200;
+}
+
+.card-header {
+    @apply flex items-center mb-4;
+}
+
+.card-icon {
+    @apply w-12 h-12 rounded-lg flex items-center justify-center mr-4;
+}
+
+.card-content {
+    @apply text-gray-600 mb-4;
+}
+
+.card-actions {
+    @apply flex items-center justify-between;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+    .container-main {
+        @apply px-4 py-8;
+    }
+    
+    .header-content {
+        @apply flex-col space-y-4;
+    }
+    
+    .card-base {
+        @apply p-4;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-actions {
+        @apply flex-col space-y-2 items-start;
+    }
+}
