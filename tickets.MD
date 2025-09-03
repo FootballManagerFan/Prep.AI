@@ -28,7 +28,7 @@ automate cleanUploads folder
 
 add text-to-speech
 - elevenLabs voice
-- corresponds with 
+- corresponds with  
 
 ## Minor tickets
 

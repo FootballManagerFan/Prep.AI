@@ -1,3 +1,8 @@
+# designs
+
+- working on testing page
+- will need login, select test, and settings page.
+
 # goals
 
 focus on mvp rn, backend first, then front-end
