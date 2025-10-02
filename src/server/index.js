@@ -436,6 +436,11 @@ app.get('/algorithms', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/algorithms.html'));
 });
 
+// Serve speed test page
+app.get('/speed-test', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/speed-test.html'));
+});
+
 // Practice routes for algorithm categories
 app.get('/practice/two-pointers', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/practice/two-pointers.html'));
