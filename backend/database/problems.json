@@ -1,0 +1,378 @@
+{
+  "problems": {
+    "two-sum": {
+      "id": "two-sum",
+      "title": "Two Sum",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["array", "hash-table", "two-pointers"],
+      "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
+      "examples": [
+        {
+          "input": "nums = [2, 7, 11, 15], target = 9",
+          "output": "[0, 1]",
+          "explanation": "Because nums[0] + nums[1] == 9, we return [0, 1]."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[2, 7, 11, 15]",
+          "target": 9,
+          "expected": [0, 1]
+        }
+      ],
+      "constraints": [
+        "1 ≤ nums.length ≤ 10⁴",
+        "-10⁹ ≤ nums[i] ≤ 10⁹",
+        "Only one valid answer exists"
+      ],
+      "starterCode": {
+        "python": "def two_sum(nums, target):\n    # Your solution here\n    pass",
+        "javascript": "function twoSum(nums, target) {\n    // Your solution here\n}",
+        "java": "public int[] twoSum(int[] nums, int target) {\n    // Your solution here\n    return new int[]{};\n}",
+        "cpp": "vector<int> twoSum(vector<int>& nums, int target) {\n    // Your solution here\n    return {};\n}"
+      }
+    },
+    "palindrome": {
+      "id": "palindrome",
+      "title": "Valid Palindrome",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["string", "two-pointers", "palindrome"],
+      "description": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
+      "examples": [
+        {
+          "input": "s = \"A man, a plan, a canal: Panama\"",
+          "output": "true",
+          "explanation": "\"amanaplanacanalpanama\" is a palindrome."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"A man, a plan, a canal: Panama\"",
+          "expected": true
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 2 * 10⁵",
+        "s consists only of printable ASCII characters"
+      ],
+      "starterCode": {
+        "python": "def is_palindrome(s):\n    # Your solution here\n    pass",
+        "javascript": "function isPalindrome(s) {\n    // Your solution here\n}",
+        "java": "public boolean isPalindrome(String s) {\n    // Your solution here\n    return false;\n}",
+        "cpp": "bool isPalindrome(string s) {\n    // Your solution here\n    return false;\n}"
+      }
+    },
+    "valid-parentheses": {
+      "id": "valid-parentheses",
+      "title": "Valid Parentheses",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["string", "stack", "parentheses"],
+      "description": "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
+      "examples": [
+        {
+          "input": "s = \"()\"",
+          "output": "true",
+          "explanation": "Simple valid parentheses."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"()\"",
+          "expected": true
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 10⁴",
+        "s consists of parentheses only '()[]{}'"
+      ],
+      "starterCode": {
+        "python": "def is_valid(s):\n    # Your solution here\n    pass",
+        "javascript": "function isValid(s) {\n    // Your solution here\n}",
+        "java": "public boolean isValid(String s) {\n    // Your solution here\n    return false;\n}",
+        "cpp": "bool isValid(string s) {\n    // Your solution here\n    return false;\n}"
+      }
+    },
+    "min-stack": {
+      "id": "min-stack",
+      "title": "Min Stack",
+      "category": "Stack",
+      "difficulty": "Medium",
+      "tags": ["stack", "design", "data-structure"],
+      "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the MinStack class: MinStack() initializes the stack object. void push(int val) pushes the element val onto the stack. void pop() removes the element on the top of the stack. int top() gets the top element of the stack. int getMin() retrieves the minimum element in the stack.",
+      "examples": [
+        {
+          "input": "MinStack minStack = new MinStack();\nminStack.push(-2);\nminStack.push(0);\nminStack.push(-3);\nminStack.getMin(); // return -3\nminStack.pop();\nminStack.top(); // return 0\nminStack.getMin(); // return -2",
+          "output": "[-3, 0, -2]",
+          "explanation": "Demonstrates push, pop, top, and getMin operations."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "Push: [-2, 0, -3], Pop: 1, Top: 0, Min: -2",
+          "expected": "[-2, 0, -3]"
+        }
+      ],
+      "constraints": [
+        "-2³¹ ≤ val ≤ 2³¹ - 1",
+        "Methods pop, top and getMin operations will always be called on non-empty stacks",
+        "At most 3 * 10⁴ calls will be made to push, pop, top, and getMin"
+      ],
+      "starterCode": {
+        "python": "class MinStack:\n    def __init__(self):\n        # Your solution here\n        pass\n    \n    def push(self, val: int) -> None:\n        # Your solution here\n        pass\n    \n    def pop(self) -> None:\n        # Your solution here\n        pass\n    \n    def top(self) -> int:\n        # Your solution here\n        pass\n    \n    def getMin(self) -> int:\n        # Your solution here\n        pass",
+        "javascript": "var MinStack = function() {\n    // Your solution here\n};\n\nMinStack.prototype.push = function(x) {\n    // Your solution here\n};\n\nMinStack.prototype.pop = function() {\n    // Your solution here\n};\n\nMinStack.prototype.top = function() {\n    // Your solution here\n};\n\nMinStack.prototype.getMin = function() {\n    // Your solution here\n};",
+        "java": "class MinStack {\n    public MinStack() {\n        // Your solution here\n    }\n    \n    public void push(int x) {\n        // Your solution here\n    }\n    \n    public void pop() {\n        // Your solution here\n    }\n    \n    public int top() {\n        // Your solution here\n        return 0;\n    }\n    \n    public int getMin() {\n        // Your solution here\n        return 0;\n    }\n}",
+        "cpp": "class MinStack {\npublic:\n    MinStack() {\n        // Your solution here\n    }\n    \n    void push(int x) {\n        // Your solution here\n    }\n    \n    void pop() {\n        // Your solution here\n    }\n    \n    int top() {\n        // Your solution here\n        return 0;\n    }\n    \n    int getMin() {\n        // Your solution here\n        return 0;\n    }\n};"
+      }
+    },
+    "evaluate-reverse-polish": {
+      "id": "evaluate-reverse-polish",
+      "title": "Evaluate Reverse Polish Notation",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["stack", "expression-evaluation"],
+      "description": "Evaluate the value of an arithmetic expression in Reverse Polish Notation. Valid operators are +, -, *, and /. Each operand may be an integer or another expression.",
+      "examples": [
+        {
+          "input": "tokens = [\"2\",\"1\",\"+\",\"3\",\"*\"]",
+          "output": "9",
+          "explanation": "((2 + 1) * 3) = 9"
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[\"2\",\"1\",\"+\",\"3\",\"*\"]",
+          "expected": 9
+        }
+      ],
+      "constraints": [
+        "1 ≤ tokens.length ≤ 10⁴",
+        "tokens[i] is either an operator: \"+\", \"-\", \"*\", \"/\", or an integer in the range [-200, 200]",
+        "All the integer divisions should truncate toward zero",
+        "There will not be any division by zero operation"
+      ],
+      "starterCode": {
+        "python": "def eval_rpn(tokens):\n    # Your solution here\n    pass",
+        "javascript": "function evalRPN(tokens) {\n    // Your solution here\n}",
+        "java": "public int evalRPN(String[] tokens) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int evalRPN(vector<string>& tokens) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "max-subarray": {
+      "id": "max-subarray",
+      "title": "Maximum Subarray",
+      "category": "Sliding Window",
+      "difficulty": "Easy",
+      "tags": ["array", "dynamic-programming", "sliding-window"],
+      "description": "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum. A subarray is a contiguous part of an array.",
+      "examples": [
+        {
+          "input": "nums = [-2,1,-3,4,-1,2,1,-5,4]",
+          "output": "6",
+          "explanation": "The subarray [4,-1,2,1] has the largest sum 6."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[-2,1,-3,4,-1,2,1,-5,4]",
+          "expected": 6
+        }
+      ],
+      "constraints": [
+        "1 ≤ nums.length ≤ 10⁵",
+        "-10⁴ ≤ nums[i] ≤ 10⁴"
+      ],
+      "starterCode": {
+        "python": "def max_subarray(nums):\n    # Your solution here\n    pass",
+        "javascript": "function maxSubArray(nums) {\n    // Your solution here\n}",
+        "java": "public int maxSubArray(int[] nums) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int maxSubArray(vector<int>& nums) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "longest-substring": {
+      "id": "longest-substring",
+      "title": "Longest Substring Without Repeating Characters",
+      "category": "Sliding Window",
+      "difficulty": "Medium",
+      "tags": ["string", "sliding-window", "hash-table"],
+      "description": "Given a string s, find the length of the longest substring without repeating characters. A substring is a contiguous sequence of characters within a string.",
+      "examples": [
+        {
+          "input": "s = \"abcabcbb\"",
+          "output": "3",
+          "explanation": "The answer is \"abc\", with the length of 3."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"abcabcbb\"",
+          "expected": 3
+        }
+      ],
+      "constraints": [
+        "0 ≤ s.length ≤ 5 * 10⁴",
+        "s consists of English letters, digits, symbols and spaces"
+      ],
+      "starterCode": {
+        "python": "def length_of_longest_substring(s):\n    # Your solution here\n    pass",
+        "javascript": "function lengthOfLongestSubstring(s) {\n    // Your solution here\n}",
+        "java": "public int lengthOfLongestSubstring(String s) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int lengthOfLongestSubstring(string s) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "permutation-in-string": {
+      "id": "permutation-in-string",
+      "title": "Permutation in String",
+      "category": "Sliding Window",
+      "difficulty": "Medium",
+      "tags": ["string", "sliding-window", "hash-table"],
+      "description": "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.",
+      "examples": [
+        {
+          "input": "s1 = \"ab\", s2 = \"eidbaooo\"",
+          "output": "true",
+          "explanation": "s2 contains one permutation of s1 (\"ba\")."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "s1=\"ab\", s2=\"eidbaooo\"",
+          "expected": true
+        }
+      ],
+      "constraints": [
+        "1 ≤ s1.length, s2.length ≤ 10⁴",
+        "s1 and s2 consist of lowercase English letters"
+      ],
+      "starterCode": {
+        "python": "def check_inclusion(s1, s2):\n    # Your solution here\n    pass",
+        "javascript": "function checkInclusion(s1, s2) {\n    // Your solution here\n}",
+        "java": "public boolean checkInclusion(String s1, String s2) {\n    // Your solution here\n    return false;\n}",
+        "cpp": "bool checkInclusion(string s1, string s2) {\n    // Your solution here\n    return false;\n}"
+      }
+    },
+    "minimum-window": {
+      "id": "minimum-window",
+      "title": "Minimum Window Substring",
+      "category": "Sliding Window",
+      "difficulty": "Hard",
+      "tags": ["string", "sliding-window", "hash-table"],
+      "description": "Given two strings s and t, return the minimum window substring of s such that every character in t (including duplicates) is included in the window.",
+      "examples": [
+        {
+          "input": "s = \"ADOBECODEBANC\", t = \"ABC\"",
+          "output": "\"BANC\"",
+          "explanation": "The minimum window substring \"BANC\" contains 'A', 'B', and 'C' from string t."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "s=\"ADOBECODEBANC\", t=\"ABC\"",
+          "expected": "BANC"
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length, t.length ≤ 10⁵",
+        "s and t consist of uppercase and lowercase English letters"
+      ],
+      "starterCode": {
+        "python": "def min_window(s, t):\n    # Your solution here\n    pass",
+        "javascript": "function minWindow(s, t) {\n    // Your solution here\n}",
+        "java": "public String minWindow(String s, String t) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string minWindow(string s, string t) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "longest-repeating": {
+      "id": "longest-repeating",
+      "title": "Longest Substring with At Most K Distinct Characters",
+      "category": "Sliding Window",
+      "difficulty": "Medium",
+      "tags": ["string", "sliding-window", "hash-table"],
+      "description": "Given a string s and an integer k, return the length of the longest substring that contains at most k distinct characters.",
+      "examples": [
+        {
+          "input": "s = \"eceba\", k = 2",
+          "output": "3",
+          "explanation": "The substring is \"ece\" with length 3."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "s=\"eceba\", k=2",
+          "expected": 3
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 5 * 10⁴",
+        "0 ≤ k ≤ 50",
+        "s consists of English letters"
+      ],
+      "starterCode": {
+        "python": "def length_of_longest_substring_k_distinct(s, k):\n    # Your solution here\n    pass",
+        "javascript": "function lengthOfLongestSubstringKDistinct(s, k) {\n    // Your solution here\n}",
+        "java": "public int lengthOfLongestSubstringKDistinct(String s, int k) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int lengthOfLongestSubstringKDistinct(string s, int k) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "fruit-into-baskets": {
+      "id": "fruit-into-baskets",
+      "title": "Fruit Into Baskets",
+      "category": "Sliding Window",
+      "difficulty": "Medium",
+      "tags": ["array", "sliding-window", "hash-table"],
+      "description": "You are visiting a farm that has a single row of fruit trees arranged from left to right. The trees are represented by an integer array fruits where fruits[i] is the type of fruit the ith tree produces.",
+      "examples": [
+        {
+          "input": "fruits = [1,2,1]",
+          "output": "3",
+          "explanation": "We can pick from all 3 trees."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[1,2,1]",
+          "expected": 3
+        }
+      ],
+      "constraints": [
+        "1 ≤ fruits.length ≤ 10⁵",
+        "0 ≤ fruits[i] < fruits.length"
+      ],
+      "starterCode": {
+        "python": "def total_fruit(fruits):\n    # Your solution here\n    pass",
+        "javascript": "function totalFruit(fruits) {\n    // Your solution here\n}",
+        "java": "public int totalFruit(int[] fruits) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int totalFruit(vector<int>& fruits) {\n    // Your solution here\n    return 0;\n}"
+      }
+    }
+  },
+  "categories": {
+    "two-pointers": {
+      "name": "Two Pointers",
+      "description": "Master the two-pointer technique for solving array and string problems efficiently.",
+      "problems": ["two-sum", "palindrome"]
+    },
+    "stack": {
+      "name": "Stack",
+      "description": "Master stack data structure problems including parentheses validation, min stack operations, and expression evaluation.",
+      "problems": ["valid-parentheses", "min-stack", "evaluate-reverse-polish"]
+    },
+    "sliding-window": {
+      "name": "Sliding Window",
+      "description": "Master sliding window problems for finding subarrays, substrings, and permutations.",
+      "problems": ["max-subarray", "longest-substring", "permutation-in-string", "minimum-window", "longest-repeating", "fruit-into-baskets"]
+    },
+    "binary-search": {
+      "name": "Binary Search",
+      "description": "Master binary search for finding elements in sorted arrays and optimization problems.",
+      "problems": []
+    },
+    "hashing": {
+      "name": "Hashing",
+      "description": "Master hash table problems for efficient lookups, duplicates, and frequency counting.",
+      "problems": []
+    }
+  }
+}
