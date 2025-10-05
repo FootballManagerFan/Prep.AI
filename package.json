@@ -1,0 +1,29 @@
+{
+  "name": "prep-ai",
+  "version": "1.0.0",
+  "description": "AI Interview Preparation Tool",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "keywords": [
+    "interview",
+    "ai",
+    "preparation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/speech": "^5.6.0",
+    "@google-cloud/storage": "^7.16.0",
+    "cors": "^2.8.5",
+    "dockerode": "^4.0.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-session": "^1.17.3",
+    "multer": "^1.4.5-lts.1",
+    "openai": "^4.55.0",
+    "pdf-parse": "^1.1.1"
+  }
+}
