@@ -534,12 +534,21 @@
                 }
             }
             
+            // Display problem description
+            const problemDescription = document.getElementById('problemDescription');
+            if (problemDescription && problem.description) {
+                problemDescription.innerHTML = `
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Problem Description</h3>
+                    <p style="color: #374151; line-height: 1.6; margin-bottom: 1rem;">${problem.description}</p>
+                `;
+            }
+            
             // Seed chat with problem-specific welcome
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 const row = document.createElement('div');
                 row.className = 'chat-row ai';
-                row.innerHTML = `<div class="bubble ai">You're on a <strong>${problem.difficulty}</strong> problem in <strong>${problem.category}</strong>. Tell me your initial approach, and I’ll guide you.</div>`;
+                row.innerHTML = `<div class="bubble ai">You're on a <strong>${problem.difficulty}</strong> problem in <strong>${problem.category}</strong>. Tell me your initial approach, and I'll guide you.</div>`;
                 chatMessages.appendChild(row);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }

@@ -40,6 +40,162 @@
         "cpp": "vector<int> twoSum(vector<int>& nums, int target) {\n    // Your solution here\n    return {};\n}"
       }
     },
+    "baseball-game": {
+      "id": "baseball-game",
+      "title": "Baseball Game",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["array", "stack", "simulation"],
+      "description": "You are keeping score of a baseball game with a list of operations. The valid operations are integers (scores), \"+\" (sum of previous two scores), \"D\" (double previous score), and \"C\" (invalidate previous score). Return the sum of all the scores.",
+      "examples": [
+        {
+          "input": "ops = [\"5\",\"2\",\"C\",\"D\",\"+\"]",
+          "output": "30",
+          "explanation": "Record 5, 2, remove 2, record 10, record 5+10 = 15; total = 30."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[\"5\",\"2\",\"C\",\"D\",\"+\"]",
+          "expected": 30
+        }
+      ],
+      "constraints": [
+        "1 ≤ ops.length ≤ 1000",
+        "ops[i] is \"C\", \"D\", \"+\", or an integer in [-3*10^4, 3*10^4]"
+      ],
+      "starterCode": {
+        "python": "def cal_points(ops):\n    # Your solution here\n    pass",
+        "javascript": "function calPoints(ops) {\n    // Your solution here\n}",
+        "java": "public int calPoints(String[] ops) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int calPoints(vector<string>& ops) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "crawler-log-folder": {
+      "id": "crawler-log-folder",
+      "title": "Crawler Log Folder",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["string", "stack", "simulation"],
+      "description": "The LeetCode file system keeps a log of folder operations. Given a list of logs with \"../\" (go up), \"./\" (stay), and \"x/\" (go into folder x), return the minimum number of operations needed to go back to the main folder.",
+      "examples": [
+        {
+          "input": "logs = [\"d1/\",\"d2/\",\"../\",\"d21/\",\"./\"]",
+          "output": "2",
+          "explanation": "End depth is 2 levels deep."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[\"d1/\",\"d2/\",\"../\",\"d21/\",\"./\"]",
+          "expected": 2
+        }
+      ],
+      "constraints": [
+        "1 ≤ logs.length ≤ 10^3",
+        "logs[i] is one of \"../\", \"./\", or \"x/\""
+      ],
+      "starterCode": {
+        "python": "def min_operations(logs):\n    # Your solution here\n    pass",
+        "javascript": "function minOperations(logs) {\n    // Your solution here\n}",
+        "java": "public int minOperations(String[] logs) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int minOperations(vector<string>& logs) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "clear-digits": {
+      "id": "clear-digits",
+      "title": "Clear Digits",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["string", "stack"],
+      "description": "Given a string s, repeatedly remove the first digit and the closest non-digit character to its left, until no digit remains. Return the resulting string.",
+      "examples": [
+        {
+          "input": "s = \"abc3d2\"",
+          "output": "ab",
+          "explanation": "Remove 3 with c => abd2, then remove 2 with d => ab."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"abc3d2\"",
+          "expected": "ab"
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 10^5",
+        "s consists of lowercase letters and digits"
+      ],
+      "starterCode": {
+        "python": "def clear_digits(s):\n    # Your solution here\n    pass",
+        "javascript": "function clearDigits(s) {\n    // Your solution here\n}",
+        "java": "public String clearDigits(String s) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string clearDigits(string s) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "decode-string": {
+      "id": "decode-string",
+      "title": "Decode String",
+      "category": "Stack",
+      "difficulty": "Medium",
+      "tags": ["string", "stack"],
+      "description": "Given an encoded string s, return its decoded string. The encoding rule is: k[encoded_string], where encoded_string inside the square brackets is repeated exactly k times.",
+      "examples": [
+        {
+          "input": "s = \"3[a]2[bc]\"",
+          "output": "\"aaabcbc\"",
+          "explanation": "Repeat a 3 times and bc 2 times."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"3[a]2[bc]\"",
+          "expected": "aaabcbc"
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 30",
+        "s consists of lowercase English letters, digits, and square brackets",
+        "It is guaranteed that s is a valid encoding"
+      ],
+      "starterCode": {
+        "python": "def decode_string(s):\n    # Your solution here\n    pass",
+        "javascript": "function decodeString(s) {\n    // Your solution here\n}",
+        "java": "public String decodeString(String s) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string decodeString(string s) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "parsing-boolean-expression": {
+      "id": "parsing-boolean-expression",
+      "title": "Parsing Boolean Expression",
+      "category": "Stack",
+      "difficulty": "Hard",
+      "tags": ["string", "stack", "parsing"],
+      "description": "A boolean expression is given with symbols 't', 'f', and operators '!', '&', '|'. Parse the expression and evaluate it to a boolean value.",
+      "examples": [
+        {
+          "input": "s = \"!(&(f,t))\"",
+          "output": "true",
+          "explanation": "Evaluate using operator precedence and parentheses."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"!(&(f,t))\"",
+          "expected": true
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 2000",
+        "s contains only 't','f','!','&','|','(',')',','"
+      ],
+      "starterCode": {
+        "python": "def parse_bool_expr(s):\n    # Your solution here\n    pass",
+        "javascript": "function parseBoolExpr(s) {\n    // Your solution here\n}",
+        "java": "public boolean parseBoolExpr(String s) {\n    // Your solution here\n    return false;\n}",
+        "cpp": "bool parseBoolExpr(string s) {\n    // Your solution here\n    return false;\n}"
+      }
+    },
     "palindrome": {
       "id": "palindrome",
       "title": "Valid Palindrome",
@@ -105,6 +261,418 @@
         "javascript": "function removeDuplicates(nums) {\n    // Your solution here\n}",
         "java": "public int removeDuplicates(int[] nums) {\n    // Your solution here\n    return 0;\n}",
         "cpp": "int removeDuplicates(vector<int>& nums) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "container-with-most-water": {
+      "id": "container-with-most-water",
+      "title": "Container With Most Water",
+      "category": "Two Pointers",
+      "difficulty": "Medium",
+      "tags": ["array", "two-pointers", "greedy"],
+      "description": "You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]). Find two lines that together with the x-axis form a container, such that the container contains the most water.",
+      "examples": [
+        {
+          "input": "height = [1,8,6,2,5,4,8,3,7]",
+          "output": "49",
+          "explanation": "The above vertical lines are represented by array [1,8,6,2,5,4,8,3,7]. In this case, the max area of water (blue section) the container can contain is 49."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[1,8,6,2,5,4,8,3,7]",
+          "expected": 49
+        }
+      ],
+      "constraints": [
+        "n == height.length",
+        "2 ≤ n ≤ 10⁵",
+        "0 ≤ height[i] ≤ 10⁴"
+      ],
+      "starterCode": {
+        "python": "def max_area(height):\n    # Your solution here\n    pass",
+        "javascript": "function maxArea(height) {\n    // Your solution here\n}",
+        "java": "public int maxArea(int[] height) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int maxArea(vector<int>& height) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "sort-colors": {
+      "id": "sort-colors",
+      "title": "Sort Colors",
+      "category": "Two Pointers",
+      "difficulty": "Medium",
+      "tags": ["array", "two-pointers", "sorting"],
+      "description": "Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent, with the colors in the order red, white, and blue. We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.",
+      "examples": [
+        {
+          "input": "nums = [2,0,2,1,1,0]",
+          "output": "[0,0,1,1,2,2]",
+          "explanation": "Sort the array in-place to get [0,0,1,1,2,2]."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[2,0,2,1,1,0]",
+          "expected": "[0,0,1,1,2,2]"
+        }
+      ],
+      "constraints": [
+        "n == nums.length",
+        "1 ≤ n ≤ 300",
+        "nums[i] is either 0, 1, or 2"
+      ],
+      "starterCode": {
+        "python": "def sort_colors(nums):\n    # Your solution here\n    pass",
+        "javascript": "function sortColors(nums) {\n    // Your solution here\n}",
+        "java": "public void sortColors(int[] nums) {\n    // Your solution here\n}",
+        "cpp": "void sortColors(vector<int>& nums) {\n    // Your solution here\n}"
+      }
+    },
+    "magical-string": {
+      "id": "magical-string",
+      "title": "Magical String",
+      "category": "Two Pointers",
+      "difficulty": "Medium",
+      "tags": ["string", "two-pointers", "simulation"],
+      "description": "A magical string s consists of only '1' and '2' and obeys the following rules: The string s is magical because concatenating the number of contiguous occurrences of characters '1' and '2' generates the string s itself. Return the number of '1's in the first n number in the magical string s.",
+      "examples": [
+        {
+          "input": "n = 6",
+          "output": "3",
+          "explanation": "The first 6 elements of magical string s is \"122112\" and it contains three 1's, so return 3."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "6",
+          "expected": 3
+        }
+      ],
+      "constraints": [
+        "1 ≤ n ≤ 10⁵"
+      ],
+      "starterCode": {
+        "python": "def magical_string(n):\n    # Your solution here\n    pass",
+        "javascript": "function magicalString(n) {\n    // Your solution here\n}",
+        "java": "public int magicalString(int n) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int magicalString(int n) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "partition-labels": {
+      "id": "partition-labels",
+      "title": "Partition Labels",
+      "category": "Two Pointers",
+      "difficulty": "Medium",
+      "tags": ["string", "two-pointers", "greedy"],
+      "description": "You are given a string s. We want to partition the string into as many parts as possible so that each letter appears in at most one part. Note that the partition is done so that after concatenating all the parts in order, the resultant string should be s. Return a list of integers representing the size of these parts.",
+      "examples": [
+        {
+          "input": "s = \"ababcbacadefegdehijhklij\"",
+          "output": "[9,7,8]",
+          "explanation": "The partition is \"ababcbaca\", \"defegde\", \"hijhklij\". This is a partition so that each letter appears in at most one part."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "\"ababcbacadefegdehijhklij\"",
+          "expected": "[9,7,8]"
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length ≤ 500",
+        "s consists of lowercase English letters"
+      ],
+      "starterCode": {
+        "python": "def partition_labels(s):\n    # Your solution here\n    pass",
+        "javascript": "function partitionLabels(s) {\n    // Your solution here\n}",
+        "java": "public List<Integer> partitionLabels(String s) {\n    // Your solution here\n    return new ArrayList<>();\n}",
+        "cpp": "vector<int> partitionLabels(string s) {\n    // Your solution here\n    return {};\n}"
+      }
+    },
+    "trapping-rain-water": {
+      "id": "trapping-rain-water",
+      "title": "Trapping Rain Water",
+      "category": "Two Pointers",
+      "difficulty": "Hard",
+      "tags": ["array", "two-pointers", "dynamic-programming", "stack"],
+      "description": "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+      "examples": [
+        {
+          "input": "height = [0,1,0,2,1,0,1,3,2,1,2,1]",
+          "output": "6",
+          "explanation": "The above elevation map (black section) is represented by array [0,1,0,2,1,0,1,3,2,1,2,1]. In this case, 6 units of rain water (blue section) are being trapped."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[0,1,0,2,1,0,1,3,2,1,2,1]",
+          "expected": 6
+        }
+      ],
+      "constraints": [
+        "n == height.length",
+        "1 ≤ n ≤ 2 * 10⁴",
+        "0 ≤ height[i] ≤ 10⁵"
+      ],
+      "starterCode": {
+        "python": "def trap(height):\n    # Your solution here\n    pass",
+        "javascript": "function trap(height) {\n    // Your solution here\n}",
+        "java": "public int trap(int[] height) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int trap(vector<int>& height) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "shortest-matching-substring": {
+      "id": "shortest-matching-substring",
+      "title": "Shortest Matching Substring",
+      "category": "Two Pointers",
+      "difficulty": "Hard",
+      "tags": ["string", "two-pointers", "sliding-window", "hash-table"],
+      "description": "Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n). If there is no such window, return the empty string.",
+      "examples": [
+        {
+          "input": "S = \"ADOBECODEBANC\", T = \"ABC\"",
+          "output": "\"BANC\"",
+          "explanation": "The minimum window substring \"BANC\" contains 'A', 'B', and 'C' from string T."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "S=\"ADOBECODEBANC\", T=\"ABC\"",
+          "expected": "BANC"
+        }
+      ],
+      "constraints": [
+        "1 ≤ s.length, t.length ≤ 10⁵",
+        "s and t consist of uppercase and lowercase English letters"
+      ],
+      "starterCode": {
+        "python": "def min_window(s, t):\n    # Your solution here\n    pass",
+        "javascript": "function minWindow(s, t) {\n    // Your solution here\n}",
+        "java": "public String minWindow(String s, String t) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string minWindow(string s, string t) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "flip-square-submatrix": {
+      "id": "flip-square-submatrix",
+      "title": "Flip Square Submatrix Vertically",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["array", "two-pointers", "matrix"],
+      "description": "Given a 2D integer matrix matrix, flip the matrix vertically (reverse each column). Return the flipped matrix.",
+      "examples": [
+        {
+          "input": "matrix = [[1,2,3],[4,5,6],[7,8,9]]",
+          "output": "[[7,8,9],[4,5,6],[1,2,3]]",
+          "explanation": "Flipping vertically reverses each column."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[[1,2,3],[4,5,6],[7,8,9]]",
+          "expected": "[[7,8,9],[4,5,6],[1,2,3]]"
+        }
+      ],
+      "constraints": [
+        "m == matrix.length",
+        "n == matrix[i].length",
+        "1 ≤ m, n ≤ 100",
+        "1 ≤ matrix[i][j] ≤ 1000"
+      ],
+      "starterCode": {
+        "python": "def flip_and_invert_image(matrix):\n    # Your solution here\n    pass",
+        "javascript": "function flipAndInvertImage(matrix) {\n    // Your solution here\n}",
+        "java": "public int[][] flipAndInvertImage(int[][] matrix) {\n    // Your solution here\n    return matrix;\n}",
+        "cpp": "vector<vector<int>> flipAndInvertImage(vector<vector<int>>& matrix) {\n    // Your solution here\n    return matrix;\n}"
+      }
+    },
+    "reverse-prefix-of-word": {
+      "id": "reverse-prefix-of-word",
+      "title": "Reverse Prefix of Word",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["string", "two-pointers"],
+      "description": "Given a 0-indexed string word and a character ch, reverse the segment of word that starts at index 0 and ends at the index of the first occurrence of ch (inclusive). If the character ch does not exist in word, do nothing.",
+      "examples": [
+        {
+          "input": "word = \"abcdefd\", ch = \"d\"",
+          "output": "\"dcbaefd\"",
+          "explanation": "The first occurrence of \"d\" is at index 3. Reverse the part of word from 0 to 3 (inclusive), the resulting string is \"dcbaefd\"."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "word=\"abcdefd\", ch=\"d\"",
+          "expected": "dcbaefd"
+        }
+      ],
+      "constraints": [
+        "1 ≤ word.length ≤ 250",
+        "word consists of lowercase English letters",
+        "ch is a lowercase English letter"
+      ],
+      "starterCode": {
+        "python": "def reverse_prefix(word, ch):\n    # Your solution here\n    pass",
+        "javascript": "function reversePrefix(word, ch) {\n    // Your solution here\n}",
+        "java": "public String reversePrefix(String word, char ch) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string reversePrefix(string word, char ch) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "merge-strings-alternately": {
+      "id": "merge-strings-alternately",
+      "title": "Merge Strings Alternately",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["string", "two-pointers"],
+      "description": "You are given two strings word1 and word2. Merge the strings by adding letters in alternating order, starting with word1. If a string is longer than the other, append the additional letters onto the end of the merged string.",
+      "examples": [
+        {
+          "input": "word1 = \"abc\", word2 = \"pqr\"",
+          "output": "\"apbqcr\"",
+          "explanation": "The merged string will be merged as so: word1: a b c, word2: p q r, merged: a p b q c r"
+        }
+      ],
+      "testCases": [
+        {
+          "input": "word1=\"abc\", word2=\"pqr\"",
+          "expected": "apbqcr"
+        }
+      ],
+      "constraints": [
+        "1 ≤ word1.length, word2.length ≤ 100",
+        "word1 and word2 consist of lowercase English letters"
+      ],
+      "starterCode": {
+        "python": "def merge_alternately(word1, word2):\n    # Your solution here\n    pass",
+        "javascript": "function mergeAlternately(word1, word2) {\n    // Your solution here\n}",
+        "java": "public String mergeAlternately(String word1, String word2) {\n    // Your solution here\n    return \"\";\n}",
+        "cpp": "string mergeAlternately(string word1, string word2) {\n    // Your solution here\n    return \"\";\n}"
+      }
+    },
+    "flipping-an-image": {
+      "id": "flipping-an-image",
+      "title": "Flipping an Image",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["array", "two-pointers", "matrix"],
+      "description": "Given an n x n binary matrix image, flip the image horizontally, then invert it, and return the resulting image. To flip an image horizontally means that each row of the image is reversed. To invert an image means that each 0 is replaced by 1, and each 1 is replaced by 0.",
+      "examples": [
+        {
+          "input": "image = [[1,1,0],[1,0,1],[0,0,0]]",
+          "output": "[[1,0,0],[0,1,0],[1,1,1]]",
+          "explanation": "First reverse each row: [[0,1,1],[1,0,1],[0,0,0]]. Then, invert the image: [[1,0,0],[0,1,0],[1,1,1]]"
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[[1,1,0],[1,0,1],[0,0,0]]",
+          "expected": "[[1,0,0],[0,1,0],[1,1,1]]"
+        }
+      ],
+      "constraints": [
+        "n == image.length",
+        "n == image[i].length",
+        "1 ≤ n ≤ 20",
+        "images[i][j] is either 0 or 1"
+      ],
+      "starterCode": {
+        "python": "def flip_and_invert_image(image):\n    # Your solution here\n    pass",
+        "javascript": "function flipAndInvertImage(image) {\n    // Your solution here\n}",
+        "java": "public int[][] flipAndInvertImage(int[][] image) {\n    // Your solution here\n    return image;\n}",
+        "cpp": "vector<vector<int>> flipAndInvertImage(vector<vector<int>>& image) {\n    // Your solution here\n    return image;\n}"
+      }
+    },
+    "daily-temperatures": {
+      "id": "daily-temperatures",
+      "title": "Daily Temperatures",
+      "category": "Stack",
+      "difficulty": "Medium",
+      "tags": ["array", "stack", "monotonic-stack"],
+      "description": "Given an array of integers temperatures representing the daily temperatures, return an array answer such that answer[i] is the number of days you have to wait after the ith day to get a warmer temperature. If there is no future day for which this is possible, keep answer[i] == 0 instead.",
+      "examples": [
+        {
+          "input": "temperatures = [73,74,75,71,69,72,76,73]",
+          "output": "[1,1,4,2,1,1,0,0]",
+          "explanation": "For day 0, the next warmer day is day 1. For day 1, the next warmer day is day 2. For day 2, the next warmer day is day 6."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[73,74,75,71,69,72,76,73]",
+          "expected": "[1,1,4,2,1,1,0,0]"
+        }
+      ],
+      "constraints": [
+        "1 ≤ temperatures.length ≤ 10⁵",
+        "30 ≤ temperatures[i] ≤ 100"
+      ],
+      "starterCode": {
+        "python": "def daily_temperatures(temperatures):\n    # Your solution here\n    pass",
+        "javascript": "function dailyTemperatures(temperatures) {\n    // Your solution here\n}",
+        "java": "public int[] dailyTemperatures(int[] temperatures) {\n    // Your solution here\n    return new int[]{};\n}",
+        "cpp": "vector<int> dailyTemperatures(vector<int>& temperatures) {\n    // Your solution here\n    return {};\n}"
+      }
+    },
+    "largest-rectangle": {
+      "id": "largest-rectangle",
+      "title": "Largest Rectangle in Histogram",
+      "category": "Stack",
+      "difficulty": "Hard",
+      "tags": ["array", "stack", "monotonic-stack"],
+      "description": "Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.",
+      "examples": [
+        {
+          "input": "heights = [2,1,5,6,2,3]",
+          "output": "10",
+          "explanation": "The largest rectangle is formed by bars with heights [5,6], which has area = 5 * 2 = 10."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[2,1,5,6,2,3]",
+          "expected": 10
+        }
+      ],
+      "constraints": [
+        "1 ≤ heights.length ≤ 10⁵",
+        "0 ≤ heights[i] ≤ 10⁴"
+      ],
+      "starterCode": {
+        "python": "def largest_rectangle_area(heights):\n    # Your solution here\n    pass",
+        "javascript": "function largestRectangleArea(heights) {\n    // Your solution here\n}",
+        "java": "public int largestRectangleArea(int[] heights) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int largestRectangleArea(vector<int>& heights) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
+    "next-greater-element": {
+      "id": "next-greater-element",
+      "title": "Next Greater Element I",
+      "category": "Stack",
+      "difficulty": "Easy",
+      "tags": ["array", "stack", "hash-table"],
+      "description": "The next greater element of some element x in an array is the first greater element that is to the right of x in the same array. You are given two distinct 0-indexed integer arrays nums1 and nums2, where nums1 is a subset of nums2. For each 0 <= i < nums1.length, find the index j such that nums1[i] == nums2[j] and determine the next greater element of nums2[j] in nums2.",
+      "examples": [
+        {
+          "input": "nums1 = [4,1,2], nums2 = [1,3,4,2]",
+          "output": "[-1,3,-1]",
+          "explanation": "The next greater element for each value of nums1 is as follows: - 4 is underlined in nums2 = [1,3,4,2]. There is no next greater element, so the answer is -1."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "nums1=[4,1,2], nums2=[1,3,4,2]",
+          "expected": "[-1,3,-1]"
+        }
+      ],
+      "constraints": [
+        "1 ≤ nums1.length ≤ nums2.length ≤ 1000",
+        "0 ≤ nums1[i], nums2[i] ≤ 10⁴",
+        "All integers in nums1 and nums2 are unique",
+        "All the integers of nums1 also appear in nums2"
+      ],
+      "starterCode": {
+        "python": "def next_greater_element(nums1, nums2):\n    # Your solution here\n    pass",
+        "javascript": "function nextGreaterElement(nums1, nums2) {\n    // Your solution here\n}",
+        "java": "public int[] nextGreaterElement(int[] nums1, int[] nums2) {\n    // Your solution here\n    return new int[]{};\n}",
+        "cpp": "vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {\n    // Your solution here\n    return {};\n}"
       }
     },
     "valid-parentheses": {
@@ -430,15 +998,24 @@
     "two-pointers": {
       "name": "Two Pointers",
       "description": "Master the two-pointer technique for solving array and string problems efficiently.",
-      "problems": ["two-sum", "palindrome", "remove-duplicates"]
+      "problems": ["two-sum", "palindrome", "remove-duplicates", "container-with-most-water", "sort-colors", "magical-string", "partition-labels", "trapping-rain-water", "shortest-matching-substring", "flip-square-submatrix", "reverse-prefix-of-word", "merge-strings-alternately", "flipping-an-image"]
     },
     "stack": {
       "name": "Stack",
       "description": "Master stack data structure problems including parentheses validation, min stack operations, and expression evaluation.",
       "problems": [
         "valid-parentheses",
+        "evaluate-reverse-polish",
+        "next-greater-element",
         "min-stack",
-        "evaluate-reverse-polish"
+        "daily-temperatures",
+        "largest-rectangle",
+        "baseball-game",
+        "crawler-log-folder",
+        "clear-digits",
+        "decode-string",
+        "parsing-boolean-expression",
+        "reverse-prefix-of-word"
       ]
     },
     "sliding-window": {
