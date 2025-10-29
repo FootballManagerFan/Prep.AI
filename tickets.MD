@@ -54,4 +54,3 @@ focus on unblocking data from leads list and uploads so ganesh can proceed wtiho
 see where allyssa's at 
 look into better sms options
 
-yo bro i kinda got re-orged to n4 as you can see so i spent most of my time yesterday on that

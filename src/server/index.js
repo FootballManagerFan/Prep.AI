@@ -8,7 +8,9 @@ const { SpeechClient } = require('@google-cloud/speech');
 const { Storage } = require('@google-cloud/storage');
 const OpenAI = require('openai');
 const dotenv = require('dotenv');
-const Docker = require('dockerode');
+// const Docker = require('dockerode');
+// Check if fetch is available (Node 18+), otherwise use polyfill
+const fetch = globalThis.fetch || require('node-fetch');
 const pdfParse = require('pdf-parse');
 
 // Import database service
@@ -77,8 +79,9 @@ const bucket = storageClient.bucket(bucketName);
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Initialize Docker client
-const docker = new Docker();
+// const docker = new Docker();
 
+/*
 // Test Docker connectivity
 app.get('/test-docker', async (req, res) => {
   try {
@@ -117,37 +120,82 @@ app.get('/test-docker', async (req, res) => {
     });
   }
 });
+*/
 
-// Code execution endpoint
+// Code execution endpoint (using Piston API)
 app.post('/execute-code', async (req, res) => {
   try {
     const { code, language } = req.body;
     
     if (!code || !language) {
-      return res.status(400).json({ error: 'Code and language required' });
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Code and language required' 
+      });
     }
     
-    console.log(`Executing ${language} code...`);
+    console.log(`Executing ${language} code via Piston API...`);
+    const output = await executeCodeWithPiston(code, language);
     
-    let result;
-    switch (language) {
-      case 'python':
-        result = await executePythonCode(code);
-        break;
-      case 'javascript':
-        result = await executeJavaScriptCode(code);
-        break;
-      default:
-        return res.status(400).json({ error: 'Language not yet supported' });
-    }
-    
-    res.json({ success: true, output: result });
+    res.json({ success: true, output });
   } catch (error) {
     console.error('Code execution error:', error);
-    res.status(500).json({ error: error.message });
+    res.json({ 
+      success: false, 
+      error: error.message 
+    });
   }
 });
 
+// Piston API code execution (no API key required)
+async function executeCodeWithPiston(code, language) {
+  const languageMap = {
+    'python': 'python',
+    'javascript': 'javascript',
+    'java': 'java',
+    'cpp': 'c++'
+  };
+
+  const pistonLanguage = languageMap[language];
+  if (!pistonLanguage) {
+    throw new Error(`Language not supported: ${language}`);
+  }
+
+  try {
+    const response = await fetch('https://emkc.org/api/v2/piston/execute', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        language: pistonLanguage,
+        version: '*',
+        files: [{
+          name: 'main',
+          content: code
+        }]
+      })
+    });
+
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(`Piston API error: ${result.message || 'Unknown error'}`);
+    }
+    
+    if (result.run.stdout) {
+      return result.run.stdout.trim();
+    } else if (result.run.stderr) {
+      throw new Error(result.run.stderr.trim());
+    } else if (result.run.output) {
+      return result.run.output.trim();
+    } else {
+      return '(no output)';
+    }
+  } catch (error) {
+    throw new Error(`Code execution failed: ${error.message}`);
+  }
+}
+
+/*
 // Python execution with Docker
 async function executePythonCode(code) {
   return new Promise(async (resolve, reject) => {
@@ -304,6 +352,9 @@ async function executePythonCode(code) {
   });
 }
 
+*/
+
+/*
 // JavaScript execution (safer Node.js approach)
 async function executeJavaScriptCode(code) {
   return new Promise(async (resolve, reject) => {
@@ -411,6 +462,8 @@ async function executeJavaScriptCode(code) {
   });
 }
 
+*/
+
 // Serve home page at root
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
@@ -434,6 +487,11 @@ app.get('/sandbox', (req, res) => {
 // Serve algorithms page
 app.get('/algorithms', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/algorithms.html'));
+});
+
+// Serve speed test page
+app.get('/speed-test', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/speed-test.html'));
 });
 
 // Practice routes for algorithm categories

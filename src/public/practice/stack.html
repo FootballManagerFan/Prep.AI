@@ -62,6 +62,9 @@
         <!-- Problem Selection -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             <!-- Easy Problems -->
+            <div class="col-span-full mb-4">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Easy Problems (7)</h3>
+            </div>
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
@@ -84,12 +87,12 @@
                         <span class="text-green-600 font-bold text-lg">2</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Min Stack</h3>
+                        <h3 class="text-lg font-semibold text-gray-900">Evaluate RPN</h3>
                         <span class="text-sm text-green-600 font-medium">Easy</span>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-4">Design a stack that supports push, pop, top, and retrieving the minimum element.</p>
-                <button onclick="startProblem('min-stack')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <p class="text-gray-600 mb-4">Evaluate Reverse Polish Notation expressions using a stack.</p>
+                <button onclick="startProblem('evaluate-reverse-polish')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                     Start Problem
                 </button>
             </div>
@@ -100,21 +103,104 @@
                         <span class="text-green-600 font-bold text-lg">3</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Evaluate RPN</h3>
-                        <span class="text-sm text-green-600 font-medium">Medium</span>
+                        <h3 class="text-lg font-semibold text-gray-900">Next Greater Element</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-4">Evaluate Reverse Polish Notation expressions using a stack.</p>
-                <button onclick="startProblem('evaluate-rpn')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <p class="text-gray-600 mb-4">Find the next greater element for each element in an array using a stack.</p>
+                <button onclick="startProblem('next-greater-element')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">4</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Baseball Game</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Simulate scoring operations using a stack.</p>
+                <button onclick="startProblem('baseball-game')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">5</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Crawler Log Folder</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Compute directory depth from navigation logs.</p>
+                <button onclick="startProblem('crawler-log-folder')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">6</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Reverse Prefix of Word</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Reverse a string prefix up to a character.</p>
+                <button onclick="startProblem('reverse-prefix-of-word')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-green-600 font-bold text-lg">7</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Clear Digits</h3>
+                        <span class="text-sm text-green-600 font-medium">Easy</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Remove digits and their nearest non-digit to the left.</p>
+                <button onclick="startProblem('clear-digits')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                     Start Problem
                 </button>
             </div>
 
             <!-- Medium Problems -->
+            <div class="col-span-full mb-4 mt-8">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Medium Problems (3)</h3>
+            </div>
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-yellow-600 font-bold text-lg">4</span>
+                        <span class="text-yellow-600 font-bold text-lg">8</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Min Stack</h3>
+                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Design a stack that supports push, pop, top, and retrieving the minimum element.</p>
+                <button onclick="startProblem('min-stack')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-yellow-600 font-bold text-lg">9</span>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Daily Temperatures</h3>
@@ -130,11 +216,31 @@
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
                     <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-yellow-600 font-bold text-lg">5</span>
+                        <span class="text-yellow-600 font-bold text-lg">10</span>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Decode String</h3>
+                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
+                    </div>
+                </div>
+                <p class="text-gray-600 mb-4">Decode k[encoded] patterns using stacks.</p>
+                <button onclick="startProblem('decode-string')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                    Start Problem
+                </button>
+            </div>
+
+            <!-- Hard Problems -->
+            <div class="col-span-full mb-4 mt-8">
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">Hard Problems (2)</h3>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-red-600 font-bold text-lg">11</span>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Largest Rectangle</h3>
-                        <span class="text-sm text-yellow-600 font-medium">Hard</span>
+                        <span class="text-sm text-red-600 font-medium">Hard</span>
                     </div>
                 </div>
                 <p class="text-gray-600 mb-4">Find the largest rectangle area in a histogram using a monotonic stack.</p>
@@ -145,16 +251,16 @@
 
             <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
                 <div class="flex items-center mb-4">
-                    <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
-                        <span class="text-yellow-600 font-bold text-lg">6</span>
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-3">
+                        <span class="text-red-600 font-bold text-lg">12</span>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Next Greater Element</h3>
-                        <span class="text-sm text-yellow-600 font-medium">Medium</span>
+                        <h3 class="text-lg font-semibold text-gray-900">Parsing Boolean Expression</h3>
+                        <span class="text-sm text-red-600 font-medium">Hard</span>
                     </div>
                 </div>
-                <p class="text-gray-600 mb-4">Find the next greater element for each element in an array using a stack.</p>
-                <button onclick="startProblem('next-greater-element')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
+                <p class="text-gray-600 mb-4">Parse and evaluate boolean expressions with !, &, |.</p>
+                <button onclick="startProblem('parsing-boolean-expression')" class="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors">
                     Start Problem
                 </button>
             </div>
@@ -173,11 +279,24 @@
     <script src="/js/shared.js"></script>
     <script>
         function startProblem(problemId) {
-            PrepAI.startProblem(problemId, 'stack');
+            PrepAI.startProblem(problemId, 'Stack');
         }
 
         function startRandomProblem() {
-            const problems = ['valid-parentheses', 'min-stack', 'evaluate-rpn', 'daily-temperatures', 'largest-rectangle', 'next-greater-element'];
+            const problems = [
+                'valid-parentheses',
+                'evaluate-reverse-polish',
+                'next-greater-element',
+                'baseball-game',
+                'crawler-log-folder',
+                'reverse-prefix-of-word',
+                'clear-digits',
+                'min-stack',
+                'daily-temperatures',
+                'decode-string',
+                'largest-rectangle',
+                'parsing-boolean-expression'
+            ];
             const randomProblem = PrepAI.generateRandomProblem(problems);
             startProblem(randomProblem);
         }

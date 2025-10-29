@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prep.AI - Speed Test Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .metric-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .test-running {
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            transition: width 0.3s ease;
+        }
+        
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        
+        .status-success { background-color: #10b981; }
+        .status-error { background-color: #ef4444; }
+        .status-warning { background-color: #f59e0b; }
+        .status-info { background-color: #3b82f6; }
+        .status-loading { 
+            background-color: #6b7280; 
+            animation: pulse 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold gradient-text">Prep.AI Speed Test</h1>
+                        <p class="text-sm text-gray-600">Performance Testing Dashboard</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 px-3 py-2 bg-green-50 rounded-lg">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-green-700 font-medium">System Ready</span>
+                    </div>
+                    <a href="/" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                        Back to Main
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Test Controls -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-900 mb-4">Test Controls</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- STT Test -->
+                <div class="metric-card rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Speech-to-Text Test</h3>
+                    <div class="space-y-3">
+                        <div class="flex space-x-2">
+                            <button id="startSTTTest" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                🎤 Record
+                            </button>
+                            <button id="uploadAudioBtn" class="flex-1 bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                📁 Upload
+                            </button>
+                        </div>
+                        <input id="audioFileInput" type="file" accept="audio/*,.webm,.mp3,.wav,.m4a,.ogg" class="hidden">
+                        <div id="sttStatus" class="text-sm text-gray-600">
+                            <span class="status-indicator status-info"></span>
+                            Ready to test
+                        </div>
+                        <div id="sttProgress" class="w-full bg-gray-200 rounded-full h-2 hidden">
+                            <div class="progress-bar h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Reply Test -->
+                <div class="metric-card rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Text Reply Test</h3>
+                    <div class="space-y-3">
+                        <div class="flex space-x-2">
+                            <input id="testMessage" type="text" placeholder="Enter test message..." 
+                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <button id="startTextTest" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                💬 Send
+                            </button>
+                        </div>
+                        <div id="textStatus" class="text-sm text-gray-600">
+                            <span class="status-indicator status-info"></span>
+                            Ready to test
+                        </div>
+                        <div id="textProgress" class="w-full bg-gray-200 rounded-full h-2 hidden">
+                            <div class="progress-bar h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Batch Test -->
+                <div class="metric-card rounded-lg p-4">
+                    <h3 class="text-lg font-medium text-gray-900 mb-3">Batch Performance Test</h3>
+                    <div class="space-y-3">
+                        <div class="flex space-x-2">
+                            <select id="batchSize" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="5">5 tests</option>
+                                <option value="10" selected>10 tests</option>
+                                <option value="20">20 tests</option>
+                                <option value="50">50 tests</option>
+                            </select>
+                            <button id="startBatchTest" class="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition-colors font-medium">
+                                🚀 Run Batch
+                            </button>
+                        </div>
+                        <div id="batchStatus" class="text-sm text-gray-600">
+                            <span class="status-indicator status-info"></span>
+                            Ready for batch test
+                        </div>
+                        <div id="batchProgress" class="w-full bg-gray-200 rounded-full h-2 hidden">
+                            <div class="progress-bar h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- STT Metrics -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Speech-to-Text Performance</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Total Time</span>
+                        <span id="sttAvgTime" class="text-2xl font-bold text-blue-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Upload Time</span>
+                        <span id="sttAvgUpload" class="text-lg font-semibold text-orange-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Upload Speed</span>
+                        <span id="sttAvgSpeed" class="text-lg font-semibold text-purple-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Audio Duration</span>
+                        <span id="sttAvgDuration" class="text-lg font-semibold text-indigo-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Response Length</span>
+                        <span id="sttAvgResponseLength" class="text-lg font-semibold text-teal-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Success Rate</span>
+                        <span id="sttSuccessRate" class="text-lg font-semibold text-purple-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total Tests</span>
+                        <span id="sttTotalTests" class="text-lg font-semibold text-gray-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Text Reply Metrics -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Text Reply Performance</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Response Time</span>
+                        <span id="textAvgTime" class="text-2xl font-bold text-green-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Fastest Response</span>
+                        <span id="textFastest" class="text-lg font-semibold text-green-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Slowest Response</span>
+                        <span id="textSlowest" class="text-lg font-semibold text-red-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Average Response Length</span>
+                        <span id="textAvgResponseLength" class="text-lg font-semibold text-teal-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Success Rate</span>
+                        <span id="textSuccessRate" class="text-lg font-semibold text-purple-600">--</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Total Tests</span>
+                        <span id="textTotalTests" class="text-lg font-semibold text-gray-600">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Test History -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Test History</h3>
+                <button id="clearHistory" class="text-red-500 hover:text-red-700 text-sm font-medium">
+                    Clear History
+                </button>
+            </div>
+            <div id="testHistory" class="space-y-2 max-h-96 overflow-y-auto">
+                <div class="text-center text-gray-500 py-8">
+                    No tests run yet. Start a test to see results here.
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mt-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">System Status</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="flex items-center space-x-3">
+                    <div id="sttServiceStatus" class="status-indicator status-info"></div>
+                    <span class="text-gray-700">STT Service</span>
+                    <span id="sttServiceTime" class="text-sm text-gray-500">--</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div id="aiServiceStatus" class="status-indicator status-info"></div>
+                    <span class="text-gray-700">AI Service</span>
+                    <span id="aiServiceTime" class="text-sm text-gray-500">--</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <div id="overallStatus" class="status-indicator status-info"></div>
+                    <span class="text-gray-700">Overall System</span>
+                    <span id="overallTime" class="text-sm text-gray-500">--</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Global state
+        let sttResults = [];
+        let textResults = [];
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let recordingStartTime = null;
+
+        // DOM elements
+        const startSTTTest = document.getElementById('startSTTTest');
+        const startTextTest = document.getElementById('startTextTest');
+        const startBatchTest = document.getElementById('startBatchTest');
+        const uploadAudioBtn = document.getElementById('uploadAudioBtn');
+        const audioFileInput = document.getElementById('audioFileInput');
+        const testMessage = document.getElementById('testMessage');
+        const testHistory = document.getElementById('testHistory');
+        const clearHistory = document.getElementById('clearHistory');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkSystemStatus();
+        });
+
+        function setupEventListeners() {
+            startSTTTest.addEventListener('click', runSTTTest);
+            startTextTest.addEventListener('click', runTextTest);
+            startBatchTest.addEventListener('click', runBatchTest);
+            uploadAudioBtn.addEventListener('click', () => audioFileInput.click());
+            audioFileInput.addEventListener('change', handleAudioFileUpload);
+            clearHistory.addEventListener('click', clearTestHistory);
+            
+            // Allow Enter key for text test
+            testMessage.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    runTextTest();
+                }
+            });
+        }
+
+        async function runSTTTest() {
+            if (isRecording) {
+                stopRecording();
+                return;
+            }
+
+            const button = startSTTTest;
+            const status = document.getElementById('sttStatus');
+            const progress = document.getElementById('sttProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                button.disabled = true;
+                button.textContent = '🛑 Stop Recording';
+                button.onclick = stopRecording; // Set the stop function
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Starting recording...';
+                progress.classList.remove('hidden');
+                progressBar.style.width = '10%';
+
+                // Request microphone access
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                progressBar.style.width = '30%';
+
+                // Set up MediaRecorder
+                mediaRecorder = new MediaRecorder(stream, { mimeType: "audio/webm;codecs=opus" });
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    progressBar.style.width = '50%';
+                    status.innerHTML = '<span class="status-indicator status-loading"></span>Processing audio...';
+                    
+                    const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+                    await processSTTAudio(audioBlob);
+                };
+
+                // Start recording
+                mediaRecorder.start();
+                isRecording = true;
+                recordingStartTime = performance.now(); // Record start time for duration calculation
+                progressBar.style.width = '40%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Recording... Speak now! (Click stop when done)';
+
+                // Auto-stop after 30 seconds (more reasonable limit)
+                setTimeout(() => {
+                    if (isRecording) {
+                        stopRecording();
+                    }
+                }, 30000);
+
+            } catch (error) {
+                console.error('STT Test error:', error);
+                status.innerHTML = '<span class="status-indicator status-error"></span>Error: ' + error.message;
+                resetSTTTest();
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+            }
+            isRecording = false;
+            
+            // Update status immediately
+            const status = document.getElementById('sttStatus');
+            status.innerHTML = '<span class="status-indicator status-loading"></span>Processing audio...';
+            
+            // Reset button state
+            const button = startSTTTest;
+            button.disabled = false;
+            button.textContent = '🎤 Record';
+            button.onclick = runSTTTest; // Reset the click handler
+        }
+
+        async function processSTTAudio(audioBlob) {
+            const totalStartTime = performance.now();
+            const status = document.getElementById('sttStatus');
+            const progress = document.getElementById('sttProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                progressBar.style.width = '60%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Uploading audio...';
+
+                const formData = new FormData();
+                formData.append("audio", audioBlob, "recording.webm");
+
+                // Measure upload time more accurately
+                const uploadStartTime = performance.now();
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const uploadEndTime = performance.now();
+                const uploadTime = uploadEndTime - uploadStartTime;
+
+                progressBar.style.width = '80%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Processing STT and LLM...';
+
+                const totalEndTime = performance.now();
+                const totalTime = totalEndTime - totalStartTime;
+                const processingTime = totalTime - uploadTime;
+
+                progressBar.style.width = '100%';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // Calculate audio duration
+                    const audioDuration = recordingStartTime ? (performance.now() - recordingStartTime) / 1000 : 0;
+                    
+                    // We can only measure total processing time, not individual STT/LLM times
+                    // The server processes STT + LLM together, so we can't separate them
+                    
+                    // Record successful result with real timing data only
+                    const result = {
+                        type: 'STT',
+                        timestamp: new Date().toISOString(),
+                        totalTime: totalTime,
+                        uploadTime: uploadTime,
+                        processingTime: processingTime,
+                        success: true,
+                        transcription: data.transcription,
+                        aiReply: data.nextQuestion,
+                        audioSize: audioBlob.size,
+                        audioDuration: audioDuration,
+                        uploadSpeed: (audioBlob.size / 1024) / (uploadTime / 1000), // KB/s
+                        responseLength: data.nextQuestion ? data.nextQuestion.length : 0,
+                        transcriptionLength: data.transcription ? data.transcription.length : 0
+                    };
+                    
+                    sttResults.push(result);
+                    updateSTTMetrics();
+                    addToHistory(result);
+                    
+                    status.innerHTML = `<span class="status-indicator status-success"></span>Success! Total: ${Math.round(totalTime)}ms (Upload: ${Math.round(uploadTime)}ms, Process: ${Math.round(processingTime)}ms) | Audio: ${audioDuration.toFixed(1)}s`;
+                } else {
+                    throw new Error('Upload failed');
+                }
+
+            } catch (error) {
+                const totalEndTime = performance.now();
+                const totalTime = totalEndTime - totalStartTime;
+                
+                const result = {
+                    type: 'STT',
+                    timestamp: new Date().toISOString(),
+                    totalTime: totalTime,
+                    success: false,
+                    error: error.message
+                };
+                
+                sttResults.push(result);
+                updateSTTMetrics();
+                addToHistory(result);
+                
+                status.innerHTML = '<span class="status-indicator status-error"></span>Error: ' + error.message;
+            } finally {
+                resetSTTTest();
+            }
+        }
+
+        function resetSTTTest() {
+            const button = startSTTTest;
+            const progress = document.getElementById('sttProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+            
+            button.disabled = false;
+            button.textContent = '🎤 Record';
+            progress.classList.add('hidden');
+            progressBar.style.width = '0%';
+        }
+
+        async function handleAudioFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            const validTypes = ['audio/webm', 'audio/mp3', 'audio/wav', 'audio/m4a', 'audio/ogg', 'audio/mpeg'];
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(webm|mp3|wav|m4a|ogg)$/i)) {
+                alert('Please select a valid audio file (webm, mp3, wav, m4a, ogg)');
+                return;
+            }
+
+            // Validate file size (max 50MB)
+            if (file.size > 50 * 1024 * 1024) {
+                alert('File too large. Please select an audio file under 50MB');
+                return;
+            }
+
+            const status = document.getElementById('sttStatus');
+            const progress = document.getElementById('sttProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Processing uploaded file...';
+                progress.classList.remove('hidden');
+                progressBar.style.width = '20%';
+
+                // Get audio duration using Web Audio API
+                const audioDuration = await getAudioDuration(file);
+                progressBar.style.width = '40%';
+
+                // Process the uploaded file
+                await processUploadedAudio(file, audioDuration);
+                
+            } catch (error) {
+                console.error('File upload error:', error);
+                status.innerHTML = '<span class="status-indicator status-error"></span>Error processing file: ' + error.message;
+                progress.classList.add('hidden');
+                progressBar.style.width = '0%';
+            } finally {
+                // Reset file input
+                audioFileInput.value = '';
+            }
+        }
+
+        async function getAudioDuration(file) {
+            return new Promise((resolve, reject) => {
+                const audio = new Audio();
+                const url = URL.createObjectURL(file);
+                
+                audio.addEventListener('loadedmetadata', () => {
+                    URL.revokeObjectURL(url);
+                    resolve(audio.duration);
+                });
+                
+                audio.addEventListener('error', (e) => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error('Could not load audio file'));
+                });
+                
+                audio.src = url;
+            });
+        }
+
+        async function processUploadedAudio(file, audioDuration) {
+            const totalStartTime = performance.now();
+            const status = document.getElementById('sttStatus');
+            const progress = document.getElementById('sttProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                progressBar.style.width = '60%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Uploading audio file...';
+
+                const formData = new FormData();
+                formData.append("audio", file, file.name);
+
+                // Measure upload time more accurately
+                const uploadStartTime = performance.now();
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+                const uploadEndTime = performance.now();
+                const uploadTime = uploadEndTime - uploadStartTime;
+
+                progressBar.style.width = '80%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Processing STT and LLM...';
+
+                const totalEndTime = performance.now();
+                const totalTime = totalEndTime - totalStartTime;
+                const processingTime = totalTime - uploadTime;
+
+                progressBar.style.width = '100%';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    // We can only measure total processing time, not individual STT/LLM times
+                    // The server processes STT + LLM together, so we can't separate them
+                    
+                    // Record successful result with real timing data only
+                    const result = {
+                        type: 'STT_UPLOAD',
+                        timestamp: new Date().toISOString(),
+                        totalTime: totalTime,
+                        uploadTime: uploadTime,
+                        processingTime: processingTime,
+                        success: true,
+                        transcription: data.transcription,
+                        aiReply: data.nextQuestion,
+                        audioSize: file.size,
+                        audioDuration: audioDuration,
+                        uploadSpeed: (file.size / 1024) / (uploadTime / 1000), // KB/s
+                        responseLength: data.nextQuestion ? data.nextQuestion.length : 0,
+                        transcriptionLength: data.transcription ? data.transcription.length : 0,
+                        fileName: file.name,
+                        fileType: file.type
+                    };
+                    
+                    sttResults.push(result);
+                    updateSTTMetrics();
+                    addToHistory(result);
+                    
+                    status.innerHTML = `<span class="status-indicator status-success"></span>Success! Total: ${Math.round(totalTime)}ms (Upload: ${Math.round(uploadTime)}ms, Process: ${Math.round(processingTime)}ms) | File: ${file.name} (${audioDuration.toFixed(1)}s)`;
+                } else {
+                    throw new Error('Upload failed');
+                }
+
+            } catch (error) {
+                const totalEndTime = performance.now();
+                const totalTime = totalEndTime - totalStartTime;
+                
+                const result = {
+                    type: 'STT_UPLOAD',
+                    timestamp: new Date().toISOString(),
+                    totalTime: totalTime,
+                    success: false,
+                    error: error.message,
+                    fileName: file.name
+                };
+                
+                sttResults.push(result);
+                updateSTTMetrics();
+                addToHistory(result);
+                
+                status.innerHTML = '<span class="status-indicator status-error"></span>Error: ' + error.message;
+            } finally {
+                progress.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        }
+
+        async function runTextTest() {
+            const message = testMessage.value.trim();
+            if (!message) {
+                alert('Please enter a test message');
+                return;
+            }
+
+            const button = startTextTest;
+            const status = document.getElementById('textStatus');
+            const progress = document.getElementById('textProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                button.disabled = true;
+                button.textContent = '⏳ Processing...';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Sending message...';
+                progress.classList.remove('hidden');
+                progressBar.style.width = '30%';
+
+                const startTime = performance.now();
+                progressBar.style.width = '60%';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>AI processing...';
+
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+                progressBar.style.width = '100%';
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    const result = {
+                        type: 'TEXT',
+                        timestamp: new Date().toISOString(),
+                        responseTime: responseTime,
+                        success: true,
+                        message: message,
+                        reply: data.reply,
+                        messageLength: message.length,
+                        responseLength: data.reply ? data.reply.length : 0
+                    };
+                    
+                    textResults.push(result);
+                    updateTextMetrics();
+                    addToHistory(result);
+                    
+                    status.innerHTML = '<span class="status-indicator status-success"></span>Success! Response time: ' + Math.round(responseTime) + 'ms | Response: ' + (data.reply ? data.reply.length : 0) + ' chars';
+                } else {
+                    throw new Error('Text processing failed');
+                }
+
+            } catch (error) {
+                const endTime = performance.now();
+                const responseTime = endTime - startTime;
+                
+                const result = {
+                    type: 'TEXT',
+                    timestamp: new Date().toISOString(),
+                    responseTime: responseTime,
+                    success: false,
+                    error: error.message,
+                    message: message
+                };
+                
+                textResults.push(result);
+                updateTextMetrics();
+                addToHistory(result);
+                
+                status.innerHTML = '<span class="status-indicator status-error"></span>Error: ' + error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = '💬 Send';
+                testMessage.value = '';
+                progress.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        }
+
+        async function runBatchTest() {
+            const batchSize = parseInt(document.getElementById('batchSize').value);
+            const button = startBatchTest;
+            const status = document.getElementById('batchStatus');
+            const progress = document.getElementById('batchProgress');
+            const progressBar = progress.querySelector('.progress-bar');
+
+            try {
+                button.disabled = true;
+                button.textContent = '⏳ Running...';
+                status.innerHTML = '<span class="status-indicator status-loading"></span>Starting batch test...';
+                progress.classList.remove('hidden');
+
+                const testMessages = [
+                    "Hello, how are you?",
+                    "What is your favorite programming language?",
+                    "Can you explain machine learning?",
+                    "Tell me about data structures",
+                    "What are the benefits of cloud computing?",
+                    "How does authentication work?",
+                    "Explain the difference between SQL and NoSQL",
+                    "What is microservices architecture?",
+                    "How do you handle errors in code?",
+                    "What is the best way to learn programming?",
+                    "Explain object-oriented programming",
+                    "What are design patterns?",
+                    "How do you optimize database queries?",
+                    "What is version control?",
+                    "Explain the software development lifecycle",
+                    "What is API design?",
+                    "How do you test software?",
+                    "What is DevOps?",
+                    "Explain containerization",
+                    "What is CI/CD?"
+                ];
+
+                let completed = 0;
+                let successful = 0;
+                let totalTime = 0;
+
+                for (let i = 0; i < batchSize; i++) {
+                    const message = testMessages[i % testMessages.length];
+                    const progressPercent = ((i + 1) / batchSize) * 100;
+                    progressBar.style.width = progressPercent + '%';
+                    status.innerHTML = `<span class="status-indicator status-loading"></span>Running test ${i + 1}/${batchSize}...`;
+
+                    try {
+                        const startTime = performance.now();
+                        const response = await fetch('/chat', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ message })
+                        });
+                        const endTime = performance.now();
+                        const responseTime = endTime - startTime;
+
+                        if (response.ok) {
+                            successful++;
+                            totalTime += responseTime;
+                        }
+                    } catch (error) {
+                        console.error(`Batch test ${i + 1} failed:`, error);
+                    }
+
+                    completed++;
+                    
+                    // Small delay between requests to avoid overwhelming the server
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                }
+
+                const avgTime = totalTime / successful;
+                const successRate = (successful / completed) * 100;
+
+                status.innerHTML = `<span class="status-indicator status-success"></span>Batch complete! ${successful}/${completed} successful, avg: ${Math.round(avgTime)}ms`;
+                
+                // Add batch result to history
+                const batchResult = {
+                    type: 'BATCH',
+                    timestamp: new Date().toISOString(),
+                    batchSize: batchSize,
+                    successful: successful,
+                    failed: completed - successful,
+                    successRate: successRate,
+                    averageTime: avgTime,
+                    totalTime: totalTime
+                };
+                
+                addToHistory(batchResult);
+
+            } catch (error) {
+                status.innerHTML = '<span class="status-indicator status-error"></span>Batch test failed: ' + error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = '🚀 Run Batch';
+                progress.classList.add('hidden');
+                progressBar.style.width = '0%';
+            }
+        }
+
+        function updateSTTMetrics() {
+            const successful = sttResults.filter(r => r.success);
+            if (successful.length === 0) return;
+
+            const totalTimes = successful.map(r => r.totalTime || r.responseTime);
+            const uploadTimes = successful.map(r => r.uploadTime).filter(t => t !== undefined);
+            const processingTimes = successful.map(r => r.processingTime).filter(t => t !== undefined);
+            const uploadSpeeds = successful.map(r => r.uploadSpeed).filter(s => s !== undefined);
+            const audioDurations = successful.map(r => r.audioDuration).filter(d => d !== undefined);
+            const responseLengths = successful.map(r => r.responseLength).filter(l => l !== undefined);
+
+            const avgTotalTime = totalTimes.reduce((a, b) => a + b, 0) / totalTimes.length;
+            const avgUploadTime = uploadTimes.length > 0 ? uploadTimes.reduce((a, b) => a + b, 0) / uploadTimes.length : 0;
+            const avgProcessingTime = processingTimes.length > 0 ? processingTimes.reduce((a, b) => a + b, 0) / processingTimes.length : 0;
+            const avgUploadSpeed = uploadSpeeds.length > 0 ? uploadSpeeds.reduce((a, b) => a + b, 0) / uploadSpeeds.length : 0;
+            const avgAudioDuration = audioDurations.length > 0 ? audioDurations.reduce((a, b) => a + b, 0) / audioDurations.length : 0;
+            const avgResponseLength = responseLengths.length > 0 ? responseLengths.reduce((a, b) => a + b, 0) / responseLengths.length : 0;
+            const successRate = (successful.length / sttResults.length) * 100;
+
+            document.getElementById('sttAvgTime').textContent = Math.round(avgTotalTime) + 'ms';
+            document.getElementById('sttAvgUpload').textContent = Math.round(avgUploadTime) + 'ms';
+            document.getElementById('sttAvgSpeed').textContent = Math.round(avgUploadSpeed) + ' KB/s';
+            document.getElementById('sttAvgDuration').textContent = avgAudioDuration.toFixed(1) + 's';
+            document.getElementById('sttAvgResponseLength').textContent = Math.round(avgResponseLength) + ' chars';
+            document.getElementById('sttSuccessRate').textContent = Math.round(successRate) + '%';
+            document.getElementById('sttTotalTests').textContent = sttResults.length;
+        }
+
+        function updateTextMetrics() {
+            const successful = textResults.filter(r => r.success);
+            if (successful.length === 0) return;
+
+            const times = successful.map(r => r.responseTime);
+            const responseLengths = successful.map(r => r.responseLength).filter(l => l !== undefined);
+            const avgTime = times.reduce((a, b) => a + b, 0) / times.length;
+            const fastest = Math.min(...times);
+            const slowest = Math.max(...times);
+            const avgResponseLength = responseLengths.length > 0 ? responseLengths.reduce((a, b) => a + b, 0) / responseLengths.length : 0;
+            const successRate = (successful.length / textResults.length) * 100;
+
+            document.getElementById('textAvgTime').textContent = Math.round(avgTime) + 'ms';
+            document.getElementById('textFastest').textContent = Math.round(fastest) + 'ms';
+            document.getElementById('textSlowest').textContent = Math.round(slowest) + 'ms';
+            document.getElementById('textAvgResponseLength').textContent = Math.round(avgResponseLength) + ' chars';
+            document.getElementById('textSuccessRate').textContent = Math.round(successRate) + '%';
+            document.getElementById('textTotalTests').textContent = textResults.length;
+        }
+
+        function addToHistory(result) {
+            const historyDiv = document.getElementById('testHistory');
+            
+            // Clear "no tests" message if it exists
+            if (historyDiv.children.length === 1 && historyDiv.children[0].textContent.includes('No tests run yet')) {
+                historyDiv.innerHTML = '';
+            }
+
+            const resultDiv = document.createElement('div');
+            resultDiv.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200';
+            
+            const statusIcon = result.success ? '✅' : '❌';
+            const statusColor = result.success ? 'text-green-600' : 'text-red-600';
+            const timeColor = result.success ? 'text-blue-600' : 'text-red-600';
+            
+            let content = '';
+            if (result.type === 'BATCH') {
+                content = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-lg">${statusIcon}</span>
+                        <div>
+                            <div class="font-medium text-gray-900">Batch Test (${result.batchSize} tests)</div>
+                            <div class="text-sm text-gray-600">${result.successful}/${result.batchSize} successful (${Math.round(result.successRate)}%)</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold ${timeColor}">${Math.round(result.averageTime)}ms avg</div>
+                        <div class="text-sm text-gray-500">${new Date(result.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `;
+            } else {
+                const typeLabel = result.type === 'STT' ? 'Speech-to-Text (Recorded)' : 
+                                 result.type === 'STT_UPLOAD' ? 'Speech-to-Text (Uploaded)' : 'Text Reply';
+                const details = result.type === 'STT' || result.type === 'STT_UPLOAD'
+                    ? (result.transcription ? `"${result.transcription.substring(0, 50)}..."` : 'Audio processing')
+                    : (result.message ? `"${result.message.substring(0, 50)}..."` : 'Text processing');
+                
+                let timingInfo = '';
+                if ((result.type === 'STT' || result.type === 'STT_UPLOAD') && result.totalTime) {
+                    const fileInfo = result.fileName ? ` | File: ${result.fileName}` : '';
+                    timingInfo = `
+                        <div class="text-xs text-gray-500 mt-1">
+                            Total: ${Math.round(result.totalTime)}ms | 
+                            Upload: ${Math.round(result.uploadTime || 0)}ms | 
+                            Process: ${Math.round(result.processingTime || 0)}ms
+                            ${result.uploadSpeed ? ` | Speed: ${Math.round(result.uploadSpeed)} KB/s` : ''}
+                            ${result.audioDuration ? ` | Audio: ${result.audioDuration.toFixed(1)}s` : ''}
+                            ${fileInfo}
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            ${result.transcription ? `Transcription: "${result.transcription.substring(0, 30)}..."` : ''}
+                            ${result.aiReply ? ` | Response: "${result.aiReply.substring(0, 30)}..."` : ''}
+                        </div>
+                    `;
+                } else {
+                    timingInfo = `<div class="text-xs text-gray-500 mt-1">${Math.round(result.responseTime || result.totalTime)}ms</div>`;
+                }
+                
+                content = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-lg">${statusIcon}</span>
+                        <div class="flex-1">
+                            <div class="font-medium text-gray-900">${typeLabel}</div>
+                            <div class="text-sm text-gray-600">${details}</div>
+                            ${timingInfo}
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="font-semibold ${timeColor}">${Math.round(result.responseTime || result.totalTime)}ms</div>
+                        <div class="text-sm text-gray-500">${new Date(result.timestamp).toLocaleTimeString()}</div>
+                    </div>
+                `;
+            }
+            
+            resultDiv.innerHTML = content;
+            historyDiv.insertBefore(resultDiv, historyDiv.firstChild);
+            
+            // Limit history to 50 entries
+            while (historyDiv.children.length > 50) {
+                historyDiv.removeChild(historyDiv.lastChild);
+            }
+        }
+
+        function clearTestHistory() {
+            if (confirm('Are you sure you want to clear all test history?')) {
+                sttResults = [];
+                textResults = [];
+                updateSTTMetrics();
+                updateTextMetrics();
+                document.getElementById('testHistory').innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        No tests run yet. Start a test to see results here.
+                    </div>
+                `;
+            }
+        }
+
+        async function checkSystemStatus() {
+            try {
+                // Test STT service
+                const sttStart = performance.now();
+                const sttResponse = await fetch('/test-pdf'); // Using existing endpoint as proxy
+                const sttTime = performance.now() - sttStart;
+                
+                document.getElementById('sttServiceStatus').className = 'status-indicator status-success';
+                document.getElementById('sttServiceTime').textContent = Math.round(sttTime) + 'ms';
+
+                // Test AI service
+                const aiStart = performance.now();
+                const aiResponse = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: 'test' })
+                });
+                const aiTime = performance.now() - aiStart;
+                
+                document.getElementById('aiServiceStatus').className = 'status-indicator status-success';
+                document.getElementById('aiServiceTime').textContent = Math.round(aiTime) + 'ms';
+
+                // Overall status
+                document.getElementById('overallStatus').className = 'status-indicator status-success';
+                document.getElementById('overallTime').textContent = Math.round((sttTime + aiTime) / 2) + 'ms avg';
+
+            } catch (error) {
+                document.getElementById('sttServiceStatus').className = 'status-indicator status-error';
+                document.getElementById('aiServiceStatus').className = 'status-indicator status-error';
+                document.getElementById('overallStatus').className = 'status-indicator status-error';
+                console.error('System status check failed:', error);
+            }
+        }
+
+        // Auto-refresh system status every 30 seconds
+        setInterval(checkSystemStatus, 30000);
+    </script>
+</body>
+</html>

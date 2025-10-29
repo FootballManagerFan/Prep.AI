@@ -1,4 +1,18 @@
 .env
-*.json
 uploads/
 node_modules/
+
+# Ignore all JSON files
+*.json
+
+# EXCEPT these critical files (whitelist)
+!package.json
+!package-lock.json
+!backend/database/problems.json
+!backend/database/*.json
+!tsconfig.json
+
+# Ignore sensitive JSON files explicitly
+googenv.json
+*-credentials.json
+*-key.json

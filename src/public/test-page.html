@@ -350,7 +350,7 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <a href="/" class="back-link">← Back to Home</a>
+            <a href="/" class="back-link" id="backLink">← Back to Home</a>
                     <div>
                 <div class="problem-title" id="problemTitle">Loading Problem...</div>
                 <div class="problem-category" id="problemCategory">Loading...</div>
@@ -467,31 +467,43 @@
                     }
                 });
                 
-                // Load problem if URL has parameters
-                loadProblemFromURL();
+                // Update editor with problem code if problem is already loaded
+                if (currentProblem && currentProblem.starterCode) {
+                    const starterCode = currentProblem.starterCode[currentLanguage] || currentProblem.starterCode.python;
+                    editor.setValue(starterCode);
+                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                }
             });
         }
 
         // Load problem from API based on URL parameters
         async function loadProblemFromURL() {
+            console.log('Loading problem from URL...');
             const urlParams = new URLSearchParams(window.location.search);
             const problemId = urlParams.get('problem');
             const category = urlParams.get('category');
             
+            console.log('Problem ID:', problemId, 'Category:', category);
+            
             if (!problemId) {
+                console.log('No problem ID found in URL');
                 showError('No problem specified in URL');
                 return;
             }
             
             try {
+                console.log('Fetching problem from API...');
                 const response = await fetch(`/api/problems/${problemId}`);
                 const result = await response.json();
+                
+                console.log('API response:', result);
                 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to load problem');
                 }
                 
                 currentProblem = result.data;
+                console.log('Problem loaded successfully:', currentProblem);
                 displayProblem(currentProblem);
             } catch (error) {
                 console.error('Error loading problem:', error);
@@ -501,15 +513,42 @@
 
         // Display problem information
         function displayProblem(problem) {
+            console.log('Displaying problem:', problem);
             document.getElementById('problemTitle').textContent = problem.title;
             document.getElementById('problemCategory').textContent = problem.category;
+
+            const backLink = document.getElementById('backLink');
+            if (backLink) {
+                const slug = (problem.category || '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+
+                if (slug) {
+                    backLink.href = `/practice/${slug}`;
+                    backLink.textContent = `← Back to ${problem.category}`;
+                } else {
+                    backLink.href = '/algorithms';
+                    backLink.textContent = '← Back to Problems';
+                }
+            }
+            
+            // Display problem description
+            const problemDescription = document.getElementById('problemDescription');
+            if (problemDescription && problem.description) {
+                problemDescription.innerHTML = `
+                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem;">Problem Description</h3>
+                    <p style="color: #374151; line-height: 1.6; margin-bottom: 1rem;">${problem.description}</p>
+                `;
+            }
             
             // Seed chat with problem-specific welcome
             const chatMessages = document.getElementById('chatMessages');
             if (chatMessages) {
                 const row = document.createElement('div');
                 row.className = 'chat-row ai';
-                row.innerHTML = `<div class="bubble ai">You're on a <strong>${problem.difficulty}</strong> problem in <strong>${problem.category}</strong>. Tell me your initial approach, and I’ll guide you.</div>`;
+                row.innerHTML = `<div class="bubble ai">You're on a <strong>${problem.difficulty}</strong> problem in <strong>${problem.category}</strong>. Tell me your initial approach, and I'll guide you.</div>`;
                 chatMessages.appendChild(row);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
@@ -559,11 +598,15 @@
             
             // Update editor with starter code and AI guidance
             if (editor && problem.starterCode) {
-                const starterCode = problem.starterCode[currentLanguage] || problem.starterCode.python;
-                editor.setValue(starterCode);
-                monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
-                
-                // Simple starter code setup
+                PrepAI.setGlobalLanguage(currentLanguage);
+                const starterCode = PrepAI.getStarterCode(currentLanguage, problem);
+                if (editor.getValue() !== starterCode) {
+                    editor.setValue(starterCode);
+                }
+
+                PrepAI.setEditorLanguage(editor, currentLanguage).catch(err => {
+                    console.warn('Failed to set editor language:', err);
+                });
             }
         }
 
@@ -586,6 +629,8 @@
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Load problem immediately, don't wait for Monaco Editor
+            loadProblemFromURL();
             initializeMonacoEditor();
             // Chat handlers
             const input = document.getElementById('chatInput');

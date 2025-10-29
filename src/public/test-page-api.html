@@ -269,7 +269,7 @@
 <body>
     <div class="header">
         <div class="header-left">
-            <a href="/" class="back-link">← Back to Home</a>
+            <a href="/" class="back-link" id="backLink">← Back to Home</a>
             <div>
                 <div class="problem-title" id="problemTitle">Loading Problem...</div>
                 <div class="problem-category" id="problemCategory">Loading...</div>
@@ -399,6 +399,23 @@
             document.getElementById('problemTitle').textContent = problem.title;
             document.getElementById('problemCategory').textContent = problem.category;
             document.getElementById('problemDescription').textContent = problem.description;
+
+            const backLink = document.getElementById('backLink');
+            if (backLink) {
+                const slug = (problem.category || '')
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+
+                if (slug) {
+                    backLink.href = `/practice/${slug}`;
+                    backLink.textContent = `← Back to ${problem.category}`;
+                } else {
+                    backLink.href = '/algorithms';
+                    backLink.textContent = '← Back to Problems';
+                }
+            }
             
             // Display examples
             const examplesContainer = document.getElementById('examplesContainer');
@@ -445,9 +462,15 @@
             
             // Update editor with starter code
             if (editor && problem.starterCode) {
-                const starterCode = problem.starterCode[currentLanguage] || problem.starterCode.python;
-                editor.setValue(starterCode);
-                monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                PrepAI.setGlobalLanguage(currentLanguage);
+                const starterCode = PrepAI.getStarterCode(currentLanguage, problem);
+                if (editor.getValue() !== starterCode) {
+                    editor.setValue(starterCode);
+                }
+
+                PrepAI.setEditorLanguage(editor, currentLanguage).catch(err => {
+                    console.warn('Failed to set editor language:', err);
+                });
             }
         }
 
