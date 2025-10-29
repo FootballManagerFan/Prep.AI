@@ -75,6 +75,38 @@
         "cpp": "bool isPalindrome(string s) {\n    // Your solution here\n    return false;\n}"
       }
     },
+    "remove-duplicates": {
+      "id": "remove-duplicates",
+      "title": "Remove Duplicates from Sorted Array",
+      "category": "Two Pointers",
+      "difficulty": "Easy",
+      "tags": ["array", "two-pointers", "in-place"],
+      "description": "Given a sorted array nums, remove the duplicates in-place such that each element appears only once and returns the new length.",
+      "examples": [
+        {
+          "input": "nums = [1,1,2]",
+          "output": "2, nums = [1,2,_]",
+          "explanation": "Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively."
+        }
+      ],
+      "testCases": [
+        {
+          "input": "[1,1,2]",
+          "expected": 2
+        }
+      ],
+      "constraints": [
+        "1 ≤ nums.length ≤ 3 * 10⁴",
+        "-100 ≤ nums[i] ≤ 100",
+        "nums is sorted in non-decreasing order"
+      ],
+      "starterCode": {
+        "python": "def remove_duplicates(nums):\n    # Your solution here\n    pass",
+        "javascript": "function removeDuplicates(nums) {\n    // Your solution here\n}",
+        "java": "public int removeDuplicates(int[] nums) {\n    // Your solution here\n    return 0;\n}",
+        "cpp": "int removeDuplicates(vector<int>& nums) {\n    // Your solution here\n    return 0;\n}"
+      }
+    },
     "valid-parentheses": {
       "id": "valid-parentheses",
       "title": "Valid Parentheses",
@@ -398,10 +430,7 @@
     "two-pointers": {
       "name": "Two Pointers",
       "description": "Master the two-pointer technique for solving array and string problems efficiently.",
-      "problems": [
-        "two-sum",
-        "palindrome"
-      ]
+      "problems": ["two-sum", "palindrome", "remove-duplicates"]
     },
     "stack": {
       "name": "Stack",

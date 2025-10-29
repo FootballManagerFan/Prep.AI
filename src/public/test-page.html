@@ -467,31 +467,43 @@
                     }
                 });
                 
-                // Load problem if URL has parameters
-                loadProblemFromURL();
+                // Update editor with problem code if problem is already loaded
+                if (currentProblem && currentProblem.starterCode) {
+                    const starterCode = currentProblem.starterCode[currentLanguage] || currentProblem.starterCode.python;
+                    editor.setValue(starterCode);
+                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
+                }
             });
         }
 
         // Load problem from API based on URL parameters
         async function loadProblemFromURL() {
+            console.log('Loading problem from URL...');
             const urlParams = new URLSearchParams(window.location.search);
             const problemId = urlParams.get('problem');
             const category = urlParams.get('category');
             
+            console.log('Problem ID:', problemId, 'Category:', category);
+            
             if (!problemId) {
+                console.log('No problem ID found in URL');
                 showError('No problem specified in URL');
                 return;
             }
             
             try {
+                console.log('Fetching problem from API...');
                 const response = await fetch(`/api/problems/${problemId}`);
                 const result = await response.json();
+                
+                console.log('API response:', result);
                 
                 if (!result.success) {
                     throw new Error(result.error || 'Failed to load problem');
                 }
                 
                 currentProblem = result.data;
+                console.log('Problem loaded successfully:', currentProblem);
                 displayProblem(currentProblem);
             } catch (error) {
                 console.error('Error loading problem:', error);
@@ -501,6 +513,7 @@
 
         // Display problem information
         function displayProblem(problem) {
+            console.log('Displaying problem:', problem);
             document.getElementById('problemTitle').textContent = problem.title;
             document.getElementById('problemCategory').textContent = problem.category;
             
@@ -586,6 +599,8 @@
 
         // Initialize when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Load problem immediately, don't wait for Monaco Editor
+            loadProblemFromURL();
             initializeMonacoEditor();
             // Chat handlers
             const input = document.getElementById('chatInput');
