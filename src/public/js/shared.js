@@ -1,4 +1,4 @@
- n// Shared JavaScript functions for Prep.AI
+// Shared JavaScript functions for Prep.AI
 // This file eliminates duplicate code across multiple HTML files
 
 // Common utility functions
