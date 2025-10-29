@@ -1,44 +1,270 @@
- n// Shared JavaScript functions for Prep.AI
+// Shared JavaScript functions for Prep.AI
 // This file eliminates duplicate code across multiple HTML files
+
+const DEFAULT_LANGUAGE = 'python';
+const LANGUAGE_SELECTOR_IDS = ['languageSelector', 'languageSelect'];
+
+const DEFAULT_CODE_SNIPPETS = {
+    python: `# Write your Python solution here
+
+def solve():
+    pass
+
+if __name__ == "__main__":
+    print(solve())`,
+    javascript: `// Write your JavaScript solution here
+
+function solve() {
+    return null;
+}
+
+console.log(solve());`,
+    java: `// Write your Java solution here
+
+public class Solution {
+    public static void main(String[] args) {
+        System.out.println("Hello World");
+    }
+}`,
+    cpp: `// Write your C++ solution here
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    cout << "Hello World" << endl;
+    return 0;
+}`
+};
 
 // Common utility functions
 const PrepAI = {
+    monacoLanguageMap: {
+        python: 'python',
+        javascript: 'javascript',
+        typescript: 'typescript',
+        java: 'java',
+        cpp: 'cpp',
+        c: 'cpp',
+        csharp: 'csharp',
+        go: 'go',
+        rust: 'rust'
+    },
+
+    monacoModuleMap: {
+        python: 'vs/basic-languages/python/python',
+        javascript: 'vs/basic-languages/javascript/javascript',
+        typescript: 'vs/basic-languages/typescript/typescript',
+        java: 'vs/basic-languages/java/java',
+        cpp: 'vs/basic-languages/cpp/cpp',
+        c: 'vs/basic-languages/cpp/cpp',
+        csharp: 'vs/basic-languages/csharp/csharp',
+        go: 'vs/basic-languages/go/go',
+        rust: 'vs/basic-languages/rust/rust'
+    },
+
+    getLanguageId: function(language) {
+        if (!language) return this.monacoLanguageMap[DEFAULT_LANGUAGE] || DEFAULT_LANGUAGE;
+        return this.monacoLanguageMap[language] || language;
+    },
+
+    getActiveLanguage: function() {
+        for (const id of LANGUAGE_SELECTOR_IDS) {
+            const selector = document.getElementById(id);
+            if (selector && selector.value) {
+                return selector.value;
+            }
+        }
+
+        if (typeof window !== 'undefined' && typeof window.currentLanguage === 'string' && window.currentLanguage) {
+            return window.currentLanguage;
+        }
+
+        return DEFAULT_LANGUAGE;
+    },
+
+    setGlobalLanguage: function(language) {
+        if (typeof window === 'undefined') return;
+        const resolvedLanguage = language || DEFAULT_LANGUAGE;
+        window.currentLanguage = resolvedLanguage;
+        window.currentMonacoLanguage = this.getLanguageId(resolvedLanguage);
+    },
+
+    getStarterCode: function(language, currentProblem) {
+        if (currentProblem && currentProblem.starterCode && currentProblem.starterCode[language]) {
+            return currentProblem.starterCode[language];
+        }
+
+        return DEFAULT_CODE_SNIPPETS[language] || DEFAULT_CODE_SNIPPETS[DEFAULT_LANGUAGE];
+    },
+
+    setEditorLanguage: async function(editor, language) {
+        if (!editor || typeof window === 'undefined' || !window.monaco || !window.monaco.editor) return;
+
+        const model = editor.getModel ? editor.getModel() : null;
+        if (!model) return;
+
+        const languageId = this.getLanguageId(language);
+
+        try {
+            await this.ensureMonacoLanguage(languageId);
+        } catch (err) {
+            console.warn(`Failed to load Monaco language resources for ${languageId}:`, err);
+        }
+
+        window.monaco.editor.setModelLanguage(model, languageId);
+    },
+
+    renderExecutionLoading: function(output, language) {
+        if (!output) return;
+        output.innerHTML = `
+            <div style="color:#6b7280; font-family:'Courier New', monospace;">
+                <div># Running ${this.escapeHtml(language)} code...</div>
+                <div style="font-size:0.9em; color:#9ca3af;"># Sending code to execution service</div>
+            </div>
+        `;
+    },
+
+    renderExecutionSuccess: function(output, language, rawOutput) {
+        if (!output) return;
+        const formatted = this.formatTerminalOutput(rawOutput);
+        output.innerHTML = `
+            <div style="color:#34d399; font-family:'Courier New', monospace; margin-bottom:0.5rem;">
+                # Execution completed successfully
+            </div>
+            <div style="background:#0f172a; color:#d1fae5; padding:0.75rem; border-radius:0.5rem; font-family:'Courier New', monospace; font-size:0.9em; white-space:pre-wrap;">
+                ${formatted}
+            </div>
+        `;
+    },
+
+    renderExecutionFailure: function(output, message) {
+        if (!output) return;
+        output.innerHTML = `
+            <div style="color:#f87171; font-family:'Courier New', monospace;">
+                <div># Execution failed</div>
+                <div style="color:#fecaca;">${this.escapeHtml(message || 'Unknown error')}</div>
+            </div>
+        `;
+    },
+
+    renderExecutionNetworkError: function(output, message) {
+        if (!output) return;
+        output.innerHTML = `
+            <div style="color:#f87171; font-family:'Courier New', monospace;">
+                <div># Network error</div>
+                <div style="color:#fecaca;">${this.escapeHtml(message)}</div>
+            </div>
+        `;
+    },
+
+    ensureMonacoLanguage: function(languageId) {
+        if (!languageId) return Promise.resolve();
+        if (typeof window === 'undefined' || !window.monaco || !window.monaco.languages) {
+            return Promise.resolve();
+        }
+
+        const modulePath = this.monacoModuleMap[languageId];
+        if (!modulePath || typeof window.require !== 'function') {
+            return Promise.resolve();
+        }
+
+        return new Promise(resolve => {
+            window.require([modulePath], (languageModule) => {
+                try {
+                    const alreadyRegistered = window.monaco.languages.getLanguages().some(lang => lang.id === languageId);
+                    if (!alreadyRegistered) {
+                        window.monaco.languages.register({ id: languageId });
+                    }
+
+                    if (languageModule && languageModule.language) {
+                        window.monaco.languages.setMonarchTokensProvider(languageId, languageModule.language);
+                    }
+                    if (languageModule && languageModule.conf) {
+                        window.monaco.languages.setLanguageConfiguration(languageId, languageModule.conf);
+                    }
+                } catch (err) {
+                    console.warn(`Unable to register Monaco language: ${languageId}`, err);
+                }
+                resolve();
+            }, (err) => {
+                console.warn(`Failed to load Monaco language module: ${languageId}`, err);
+                resolve();
+            });
+        });
+    },
+
     // Clear output function - used across multiple pages
     clearOutput: function(outputElementId = 'codeOutput') {
         const element = document.getElementById(outputElementId);
         if (element) {
-            element.textContent = '# Output cleared';
+            element.innerHTML = `
+                <div style="color:#9ca3af; font-family:'Courier New', monospace;">
+                    <div># Output cleared</div>
+                </div>
+            `;
         }
     },
 
     // Run code function - used across multiple pages
-    runCode: function(editor, outputElementId = 'codeOutput') {
+    runCode: async function(editor, outputElementId = 'codeOutput') {
         if (!editor) return;
-        
+
+        const language = this.getActiveLanguage();
+        this.setGlobalLanguage(language);
+
+        try {
+            await this.setEditorLanguage(editor, language);
+        } catch (err) {
+            console.warn(`Unable to synchronise Monaco language for ${language}:`, err);
+        }
+
         const code = editor.getValue();
         const output = document.getElementById(outputElementId);
-        
-        if (output) {
-            output.textContent = `# Code executed:\n${code}\n\n# Note: This is a demo. In a real application, your code would be executed and results would be shown here.`;
+
+        this.renderExecutionLoading(output, language);
+
+        try {
+            const response = await fetch('/execute-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code, language })
+            });
+
+            const data = await response.json().catch(() => null);
+            const succeeded = data && data.success === true;
+
+            if (response.ok && succeeded) {
+                this.renderExecutionSuccess(output, language, data.output);
+                return;
+            }
+
+            const errorMessage = data && data.error ? data.error : response.statusText || 'Execution failed';
+            this.renderExecutionFailure(output, errorMessage);
+        } catch (error) {
+            this.renderExecutionNetworkError(output, error.message);
         }
     },
 
     // Change programming language function
     changeLanguage: function(editor, currentProblem, languageSelectorId = 'languageSelector') {
         const languageSelector = document.getElementById(languageSelectorId);
-        if (!languageSelector) return;
-        
-        const currentLanguage = languageSelector.value;
-        
-        if (editor && currentProblem && currentProblem.starterCode) {
-            const newCode = currentProblem.starterCode[currentLanguage];
-            if (newCode) {
-                editor.setValue(newCode);
-                if (window.monaco && window.monaco.editor) {
-                    monaco.editor.setModelLanguage(editor.getModel(), currentLanguage);
-                }
+        const currentLanguage = (languageSelector && languageSelector.value) ? languageSelector.value : this.getActiveLanguage();
+
+        this.setGlobalLanguage(currentLanguage);
+
+        if (editor) {
+            const starterCode = this.getStarterCode(currentLanguage, currentProblem);
+
+            if (editor.getValue() !== starterCode) {
+                editor.setValue(starterCode);
             }
+
+            this.setEditorLanguage(editor, currentLanguage).catch((err) => {
+                console.warn(`Failed to synchronise Monaco language for ${currentLanguage}:`, err);
+            });
         }
+
         return currentLanguage;
     },
 
@@ -57,7 +283,7 @@ const PrepAI = {
 
     // Format terminal output with proper styling
     formatTerminalOutput: function(output) {
-        if (!output) return '<span class="text-gray-500">(no output)</span>';
+        if (!output) return '<span class="text-gray-500" style="color:#9ca3af;">(no output)</span>';
         
         // AGGRESSIVE cleaning - remove ALL weird Docker symbols and non-standard characters
         let cleanOutput = output
@@ -76,15 +302,15 @@ const PrepAI = {
             
             // Detect different types of output and style accordingly
             if (line.includes('Error:') || line.includes('Traceback:')) {
-                return `<span class="text-red-400">${this.escapeHtml(line)}</span><br>`;
+                return `<span class="text-red-400" style="color:#f87171;">${this.escapeHtml(line)}</span><br>`;
             } else if (line.includes('Warning:') || line.includes('DeprecationWarning:')) {
-                return `<span class="text-yellow-400">${this.escapeHtml(line)}</span><br>`;
+                return `<span class="text-yellow-400" style="color:#facc15;">${this.escapeHtml(line)}</span><br>`;
             } else if (line.match(/^\s*>>>/)) {
-                return `<span class="text-blue-400">${this.escapeHtml(line)}</span><br>`;
+                return `<span class="text-blue-400" style="color:#60a5fa;">${this.escapeHtml(line)}</span><br>`;
             } else if (line.match(/^\s*\.\.\./)) {
-                return `<span class="text-blue-400">${this.escapeHtml(line)}</span><br>`;
+                return `<span class="text-blue-400" style="color:#60a5fa;">${this.escapeHtml(line)}</span><br>`;
             } else {
-                return `<span class="text-green-300">${this.escapeHtml(line)}</span><br>`;
+                return `<span class="text-green-300" style="color:#6ee7b7;">${this.escapeHtml(line)}</span><br>`;
             }
         });
         
@@ -175,4 +401,14 @@ const PrepAI = {
 // Export for use in other files
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = PrepAI;
+}
+
+if (typeof window !== 'undefined') {
+    window.PrepAI = PrepAI;
+    if (typeof window.currentLanguage !== 'string') {
+        window.currentLanguage = DEFAULT_LANGUAGE;
+    }
+    if (typeof window.currentMonacoLanguage !== 'string') {
+        window.currentMonacoLanguage = PrepAI.getLanguageId(window.currentLanguage);
+    }
 }

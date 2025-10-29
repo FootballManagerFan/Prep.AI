@@ -5,7 +5,11 @@
       "title": "Two Sum",
       "category": "Two Pointers",
       "difficulty": "Easy",
-      "tags": ["array", "hash-table", "two-pointers"],
+      "tags": [
+        "array",
+        "hash-table",
+        "two-pointers"
+      ],
       "description": "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
       "examples": [
         {
@@ -18,7 +22,10 @@
         {
           "input": "[2, 7, 11, 15]",
           "target": 9,
-          "expected": [0, 1]
+          "expected": [
+            0,
+            1
+          ]
         }
       ],
       "constraints": [
@@ -38,7 +45,11 @@
       "title": "Valid Palindrome",
       "category": "Two Pointers",
       "difficulty": "Easy",
-      "tags": ["string", "two-pointers", "palindrome"],
+      "tags": [
+        "string",
+        "two-pointers",
+        "palindrome"
+      ],
       "description": "A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, it reads the same forward and backward.",
       "examples": [
         {
@@ -69,7 +80,11 @@
       "title": "Valid Parentheses",
       "category": "Stack",
       "difficulty": "Easy",
-      "tags": ["string", "stack", "parentheses"],
+      "tags": [
+        "string",
+        "stack",
+        "parentheses"
+      ],
       "description": "Given a string s containing just the characters \"(\", \")\", \"{\", \"}\", \"[\" and \"]\", determine if the input string is valid.",
       "examples": [
         {
@@ -100,7 +115,11 @@
       "title": "Min Stack",
       "category": "Stack",
       "difficulty": "Medium",
-      "tags": ["stack", "design", "data-structure"],
+      "tags": [
+        "stack",
+        "design",
+        "data-structure"
+      ],
       "description": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the MinStack class: MinStack() initializes the stack object. void push(int val) pushes the element val onto the stack. void pop() removes the element on the top of the stack. int top() gets the top element of the stack. int getMin() retrieves the minimum element in the stack.",
       "examples": [
         {
@@ -132,7 +151,10 @@
       "title": "Evaluate Reverse Polish Notation",
       "category": "Stack",
       "difficulty": "Easy",
-      "tags": ["stack", "expression-evaluation"],
+      "tags": [
+        "stack",
+        "expression-evaluation"
+      ],
       "description": "Evaluate the value of an arithmetic expression in Reverse Polish Notation. Valid operators are +, -, *, and /. Each operand may be an integer or another expression.",
       "examples": [
         {
@@ -165,7 +187,11 @@
       "title": "Maximum Subarray",
       "category": "Sliding Window",
       "difficulty": "Easy",
-      "tags": ["array", "dynamic-programming", "sliding-window"],
+      "tags": [
+        "array",
+        "dynamic-programming",
+        "sliding-window"
+      ],
       "description": "Given an integer array nums, find the contiguous subarray (containing at least one number) which has the largest sum and return its sum. A subarray is a contiguous part of an array.",
       "examples": [
         {
@@ -196,7 +222,11 @@
       "title": "Longest Substring Without Repeating Characters",
       "category": "Sliding Window",
       "difficulty": "Medium",
-      "tags": ["string", "sliding-window", "hash-table"],
+      "tags": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
       "description": "Given a string s, find the length of the longest substring without repeating characters. A substring is a contiguous sequence of characters within a string.",
       "examples": [
         {
@@ -227,7 +257,11 @@
       "title": "Permutation in String",
       "category": "Sliding Window",
       "difficulty": "Medium",
-      "tags": ["string", "sliding-window", "hash-table"],
+      "tags": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
       "description": "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.",
       "examples": [
         {
@@ -258,7 +292,11 @@
       "title": "Minimum Window Substring",
       "category": "Sliding Window",
       "difficulty": "Hard",
-      "tags": ["string", "sliding-window", "hash-table"],
+      "tags": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
       "description": "Given two strings s and t, return the minimum window substring of s such that every character in t (including duplicates) is included in the window.",
       "examples": [
         {
@@ -289,7 +327,11 @@
       "title": "Longest Substring with At Most K Distinct Characters",
       "category": "Sliding Window",
       "difficulty": "Medium",
-      "tags": ["string", "sliding-window", "hash-table"],
+      "tags": [
+        "string",
+        "sliding-window",
+        "hash-table"
+      ],
       "description": "Given a string s and an integer k, return the length of the longest substring that contains at most k distinct characters.",
       "examples": [
         {
@@ -321,7 +363,11 @@
       "title": "Fruit Into Baskets",
       "category": "Sliding Window",
       "difficulty": "Medium",
-      "tags": ["array", "sliding-window", "hash-table"],
+      "tags": [
+        "array",
+        "sliding-window",
+        "hash-table"
+      ],
       "description": "You are visiting a farm that has a single row of fruit trees arranged from left to right. The trees are represented by an integer array fruits where fruits[i] is the type of fruit the ith tree produces.",
       "examples": [
         {
@@ -352,17 +398,31 @@
     "two-pointers": {
       "name": "Two Pointers",
       "description": "Master the two-pointer technique for solving array and string problems efficiently.",
-      "problems": ["two-sum", "palindrome"]
+      "problems": [
+        "two-sum",
+        "palindrome"
+      ]
     },
     "stack": {
       "name": "Stack",
       "description": "Master stack data structure problems including parentheses validation, min stack operations, and expression evaluation.",
-      "problems": ["valid-parentheses", "min-stack", "evaluate-reverse-polish"]
+      "problems": [
+        "valid-parentheses",
+        "min-stack",
+        "evaluate-reverse-polish"
+      ]
     },
     "sliding-window": {
       "name": "Sliding Window",
       "description": "Master sliding window problems for finding subarrays, substrings, and permutations.",
-      "problems": ["max-subarray", "longest-substring", "permutation-in-string", "minimum-window", "longest-repeating", "fruit-into-baskets"]
+      "problems": [
+        "max-subarray",
+        "longest-substring",
+        "permutation-in-string",
+        "minimum-window",
+        "longest-repeating",
+        "fruit-into-baskets"
+      ]
     },
     "binary-search": {
       "name": "Binary Search",
